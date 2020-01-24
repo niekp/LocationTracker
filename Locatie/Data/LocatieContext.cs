@@ -12,5 +12,6 @@ namespace Locatie.Data
 
         public DbSet<Ping> Ping { get; set; }
         public DbSet<Location> Location { get; set; }
+        public DbSet<Ride> Ride { get; set; }
     }
 }

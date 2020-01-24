@@ -27,10 +27,15 @@ namespace Locatie
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Databases
             services.AddDbContext<LocatieContext>(options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
+
+            // Tables
             services.AddTransient<IPingRepository, PingRepository>();
             services.AddTransient<ILocationRepository, LocationRepository>();
+            services.AddTransient<IRideRepository, RideRepository>();
 
+            // MVC
             services.AddControllersWithViews();
         }
 

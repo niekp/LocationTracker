@@ -28,5 +28,7 @@ namespace Locatie.Models
 
         [Column("rit_id")]
         public int? RideId { get; set; }
+
+        public Ride Ride { get; set; }
     }
 }
