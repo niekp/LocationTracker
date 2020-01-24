@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,5 +18,7 @@ namespace Locatie.Models
 
         [Column("afstand_meter")]
         public int DistanceInMeters { get; set; }
+
+        public ICollection<RideTag> Tags { get; set; }
     }
 }

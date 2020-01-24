@@ -35,6 +35,7 @@ namespace Locatie
             services.AddTransient<ILocationRepository, LocationRepository>();
             services.AddTransient<IRideRepository, RideRepository>();
             services.AddTransient<IDayRepository, DayRepository>();
+            services.AddTransient<ITagRepository, TagRepository>();
 
             // MVC
             services.AddControllersWithViews();
