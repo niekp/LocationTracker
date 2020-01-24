@@ -29,6 +29,7 @@ namespace Locatie
         {
             services.AddDbContext<LocatieContext>(options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IPingRepository, PingRepository>();
+            services.AddTransient<ILocationRepository, LocationRepository>();
 
             services.AddControllersWithViews();
         }

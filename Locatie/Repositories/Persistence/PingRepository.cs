@@ -14,7 +14,10 @@ namespace Locatie.Repositories.Persistence
 
         public Ping GetLastPing()
         {
-            return dbSet.Take(1).OrderByDescending(p => p.Tijd).FirstOrDefault();
+            var p = dbSet.Take(1).OrderByDescending(p => p.Time).FirstOrDefault();
+            db.Entry(p).Reference(x => x.Location).Load();
+
+            return p;
         }
     }
 }

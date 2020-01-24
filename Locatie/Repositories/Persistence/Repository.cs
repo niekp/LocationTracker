@@ -9,7 +9,7 @@ namespace Locatie.Repositories.Persistence
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly LocatieContext db = null;
+        protected readonly LocatieContext db = null;
         protected readonly DbSet<T> dbSet = null;
 
         public Repository(LocatieContext locatieContext)
