@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.19" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="Repositories\" />
+    <Folder Include="Repositories\Core\" />
+    <Folder Include="Repositories\Persistence\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="mono_crash.8682cc0d8.0.json" />
+    <Content Remove="mono_crash.8682cc0d8.0.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="mono_crash.mem.3531.1.blob" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Repositories\Persistence\IPingRepository.cs" />
+  </ItemGroup>
+</Project>
