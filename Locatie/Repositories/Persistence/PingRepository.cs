@@ -16,6 +16,8 @@ namespace Locatie.Repositories.Persistence
         {
             var p = dbSet.Take(1).OrderByDescending(p => p.Time).FirstOrDefault();
             db.Entry(p).Reference(x => x.Location).Load();
+            db.Entry(p).Collection(x => x.Days).Load();
+            db.Entry(p.Days.FirstOrDefault()).Reference(x => x.Day).Load();
 
             return p;
         }

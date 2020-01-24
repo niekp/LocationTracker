@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,5 +25,7 @@ namespace Locatie.Models
         public int? RideId { get; set; }
 
         public Ride Ride { get; set; }
+
+        public ICollection<DayPing> Pings { get; set; }
     }
 }
