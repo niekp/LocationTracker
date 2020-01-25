@@ -23,6 +23,7 @@
     <Content Remove="mono_crash.8682cc0d8.0.json" />
     <Content Remove="mono_crash.8682cc0d8.0.json" />
     <Content Remove="wwwroot\js\site.js" />
+    <Content Remove="Views\Home\Privacy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="mono_crash.mem.3531.1.blob" />
