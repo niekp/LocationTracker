@@ -8,5 +8,7 @@ namespace Locatie.Repositories.Core
     public interface IDayRepository : IRepository<Day>
     {
         Task<List<Day>> GetDays(DateTime From, DateTime To);
+        Task<Day> GetPrevious(Day day);
+        Task<Day> GetNext(Day day);
     }
 }

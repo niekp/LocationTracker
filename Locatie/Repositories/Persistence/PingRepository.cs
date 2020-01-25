@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Locatie.Data;
 using Locatie.Models;
 using Locatie.Repositories.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace Locatie.Repositories.Persistence
 {
@@ -20,6 +23,14 @@ namespace Locatie.Repositories.Persistence
             db.Entry(p.Days.FirstOrDefault()).Reference(x => x.Day).Load();
 
             return p;
+        }
+
+        public async Task<List<Ping>> GetPings(Day day)
+        {
+            return await db.DayPing
+                .Where(dp => dp.DayId == day.Id)
+                .Select(dp => dp.Ping)
+                .ToListAsync();
         }
     }
 }

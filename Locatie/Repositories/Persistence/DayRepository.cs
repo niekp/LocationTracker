@@ -28,5 +28,29 @@ namespace Locatie.Repositories.Persistence
             .OrderBy(d => d.TimeFrom)
             .ToListAsync();
         }
+
+        public Task<Day> GetPrevious(Day day)
+        {
+            return dbSet.Where(d =>
+                    d.TimeTo <= day.TimeFrom
+                    && d.Id != day.Id
+                ).OrderByDescending(d => d.TimeFrom)
+                .Include(d => d.Location)
+                .Include(d => d.Ride)
+                .Take(1)
+                .FirstOrDefaultAsync();
+        }
+
+        public Task<Day> GetNext(Day day)
+        {
+            return dbSet.Where(d =>
+                    d.TimeFrom >= day.TimeTo
+                    && d.Id != day.Id
+                ).OrderBy(d => d.TimeFrom)
+                .Include(d => d.Location)
+                .Include(d => d.Ride)
+                .Take(1)
+                .FirstOrDefaultAsync();
+        }
     }
 }

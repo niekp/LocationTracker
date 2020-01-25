@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Locatie.Data;
 using Locatie.Repositories.Core;
 using Microsoft.EntityFrameworkCore;
@@ -18,14 +19,14 @@ namespace Locatie.Repositories.Persistence
             dbSet = db.Set<T>();
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAllASync()
         {
-            return dbSet.ToList();
+            return await dbSet.ToListAsync();
         }
 
-        public T GetById(object id)
+        public Task<T> GetByIdAsync(object id)
         {
-            return dbSet.Find(id);
+            return dbSet.FindAsync(id);
         }
 
         public void Insert(T obj)

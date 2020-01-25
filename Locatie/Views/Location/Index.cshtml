@@ -66,7 +66,7 @@
                 </td>
                 <td>@day.GetTimeSpendDisplay()</td>
                 <td style='width:16px;'><a href=''>wijzig</a></td>
-                <td style='width:16px;'><a onclick="return confirm('Weet je het zeker?');" href=''>verwijder</a></td>
+                <td style='width:16px;'><a onclick="return confirm('Weet je het zeker?');" href='@Url.Action("Delete", "Day", new { id = day.Id })'>verwijder</a></td>
             </tr>
         }
     </tbody>
