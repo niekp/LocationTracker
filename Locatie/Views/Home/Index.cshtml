@@ -17,14 +17,14 @@
 		});
 
 
-		function changeDate(schuif) {
+		function changeDate(shift) {
             var url = "@Url.Action("Index", "Home")";
 
 			var date = $("#date").val();
 
-			if (schuif != undefined) {
+			if (shift != undefined) {
 				var dtm = DateFromString(date);
-				dtm = dtm.addDays(schuif);
+				dtm = dtm.addDays(shift);
 				date = DateToString(dtm);
 			}
 
@@ -59,9 +59,7 @@
                 @if (day.Location is Location)
                 {
                     <td>
-                        <a href="{{ url('locatie_dag', { 'id': dag_entry.getLocatie.id }) }}">
-                            @day.Location.Label
-                        </a>
+                        @Html.ActionLink(day.Location.Label, "History", "Location", new { id = day.Location.Id })
                     </td>
                     <td>
                         @if (day.Id == Model.Last().Id

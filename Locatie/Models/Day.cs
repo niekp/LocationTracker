@@ -49,5 +49,10 @@ namespace Locatie.Models
             );
         }
 
+        public double GetHours()
+        {
+            return (TimeTo - TimeFrom).TotalHours;
+        }
+
     }
 }

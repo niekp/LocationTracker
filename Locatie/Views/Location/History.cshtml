@@ -1,0 +1,73 @@
+﻿@model Location
+@{
+    ViewData["Title"] = "Locatie";
+}
+
+@section Scripts {
+    <script type="text/javascript">
+		function changeDatum() {
+            var url = "@Url.Action("History", "Location", new { id = Model.Id })";
+
+			var start = $("#start").val();
+			var eind = $("#eind").val();
+
+			window.location.href = url += "?from=" + start + "&to=" + eind;
+		}
+    </script>
+}
+
+<h4>@Model.Label</h4>
+<div class="row">
+    <div class="col-12 col-sm-12 col-md-5 col-lg-4 mt-3">
+        <label for="datum" class="sr-only">Periode</label>
+
+        <input type="text" name="start" id="start" class="datepicker form-control" value="@ViewBag.From.ToString("dd-MM-yyyy")" style="width: 100px;float: left;margin-right:10px;">
+        <input type="text" name="eind" id="eind" class="datepicker form-control" value="@ViewBag.To.ToString("dd-MM-yyyy")" style="width: 100px;float: left;margin-right:10px;">
+        <input type="button" class="btn btn-primary" value="Go" onclick="changeDatum();">&nbsp;&nbsp;&nbsp;
+    </div>
+    <div class="col-12 col-sm-12 col-md-7 col-lg-8 mt-3" style="text-align:right;">
+        <input type="button" class="btn btn-primary" onclick="window.location.href='{{ url('locatie_merge', { 'id': locatie.id }) }}'" value="samenvoegen">
+        <input type="button" class="btn btn-primary" onclick="window.location.href='{{ url('locatie_edit', { 'id': locatie.id }) }}'" value="Wijzig">
+        <input type="button" class="btn btn-primary" onclick="window.open('https://www.google.com/maps/search/{{locatie.getLatitude}},{{locatie.getLongitude}}', '_blank');" value="Navigeer">
+    </div>
+</div>
+
+<div style="clear:both;"></div>
+<br />
+
+<partial name="_MapPartial" model="new MapData { Latitude = Model.Latitude, Longitude = Model.Longitude }" />
+<div style="clear:both;"></div>
+<br />
+<br />
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Bezoek</th>
+            <th>Tijdsduur</th>
+            <th style='width:16px;'>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var day in Model.Days.Where(d => d.TimeFrom >= ViewBag.From && d.TimeFrom <= ViewBag.To))
+        {
+            <tr>
+                <td>
+                    @day.TimeFrom.ToString("dd-MM-yyyy HH:mm")
+                    @Html.Raw(" - ")
+                    @if (day.GetHours() < 24)
+                    {
+                        @day.TimeTo.ToString("HH:mm")
+                    }
+                    else
+                    {
+                        @day.TimeTo.ToString("dd-MM-yyyy HH:mm")
+                    }
+                </td>
+                <td>@day.GetTimeSpendDisplay()</td>
+                <td style='width:16px;'><a href=''>wijzig</a></td>
+                <td style='width:16px;'><a onclick="return confirm('Weet je het zeker?');" href=''>verwijder</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

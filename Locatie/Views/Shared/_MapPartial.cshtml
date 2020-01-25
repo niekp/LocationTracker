@@ -27,11 +27,16 @@
             }
         </ride>
     }
+    <markers>
+        @if (Model.Latitude != null && Model.Longitude != null)
+        {
+            <coord data-lat="@Model.Latitude" data-long="@Model.Longitude"></coord>
+        }
+    </markers>
 </div>
 
-<script type="text/javascript">
-    var config = document.querySelector("[data-configuration]");
-    
+<script type="text/javascript">var config = document.querySelector("[data-configuration]");
+
     var platform = new H.service.Platform({
         apikey: config.dataset.hereApiKey,
         app_id: config.dataset.hereAppId,
@@ -47,6 +52,9 @@
 
     var group = new H.map.Group();
     var rides = document.querySelectorAll("[data-container='coordinates'] ride");
+    var markers = document.querySelectorAll("[data-container='coordinates'] markers coord");
+
+    // Rides
 
     rides.forEach(ride => {
         var startPoint = null;
@@ -93,12 +101,24 @@
             group.addObjects([routeOutline, routeLine]);
     });
 
+    // Markers
+
+    markers.forEach(marker => {
+        var latitude = parseFloat(marker.dataset.lat);
+        var longitude = parseFloat(marker.dataset.long);
+        var marker = new H.map.Marker({
+            lat: latitude,
+            lng: longitude
+        });
+
+        group.addObject(marker);
+    });
+
     map.addObject(group);
 
     map.getViewModel().setLookAtData({
         bounds: group.getBoundingBox()
     });
-
 
     var ui = H.ui.UI.createDefault(map, defaultLayers);
     var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));</script>
