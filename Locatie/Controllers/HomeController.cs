@@ -29,7 +29,7 @@ namespace Locatie.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var date = DateTime.Now.Date.AddDays(-6);
+            var date = DateTime.Now.Date.AddDays(-7);
             var days = await dayRepository.GetDays(date, date.AddDays(1).AddMinutes(-1));
             ViewBag.Date = date;
             return View(days);

@@ -9,7 +9,7 @@
     }
 }
 
-@section javascripts {
+@section Scripts {
     <script type="text/javascript">
 		$("#date").datepicker({
 			format: "dd-mm-yyyy",
@@ -42,10 +42,11 @@
     </div>
 </div>
 
-{% if routes|length > 0 %}
-    {% include 'map.html.twig' with {'routes': routes } %}
+@{
+    var rides = Model.Where(d => d.Ride is Ride).Select(d => d.Ride).ToList();
+    <partial name="_MapPartial" model="new MapData { Rides = rides }" />
     <div style="clear:both;"><br /></div>
-{% endif %}
+}
 
 <table class="table table-striped">
     <thead>
@@ -54,49 +55,49 @@
     <tbody>
         @foreach (Day day in Model)
         {
-        <tr>
-            @if (day.Location is Location)
-            {
-                <td>
-                    <a href="{{ url('locatie_dag', { 'id': dag_entry.getLocatie.id }) }}">
-                        @day.Location.Label
-                    </a>
-                </td>
-                <td>
-                    @if (day.Id == Model.Last().Id
-                      && day.Id != Model.FirstOrDefault().Id) // Last entry of the day
-                    {
-                        @day.TimeFrom.ToString("HH:mm")
-                        @Html.Raw(" - ")
-                        if (day.TimeFrom.Date == day.TimeTo.Date)
+            <tr>
+                @if (day.Location is Location)
+                {
+                    <td>
+                        <a href="{{ url('locatie_dag', { 'id': dag_entry.getLocatie.id }) }}">
+                            @day.Location.Label
+                        </a>
+                    </td>
+                    <td>
+                        @if (day.Id == Model.Last().Id
+                         && day.Id != Model.FirstOrDefault().Id) // Last entry of the day
                         {
-                            @day.TimeTo.ToString("HH:mm")
+                            @day.TimeFrom.ToString("HH:mm")
+                            @Html.Raw(" - ")
+                            if (day.TimeFrom.Date == day.TimeTo.Date)
+                            {
+                                @day.TimeTo.ToString("HH:mm")
+                            }
+                            else
+                            {
+                                @day.TimeTo.ToString("HH:mm d")@Html.Raw("e")
+                            }
                         }
                         else
                         {
-                            @day.TimeTo.ToString("HH:mm d")@Html.Raw("e")
+                            @day.GetTimeDisplay();
                         }
-                    }
-                    else
-                    {
-                        @day.GetTimeDisplay();
-                    }
-                </td>
-            }
-            else if (day.Ride is Ride)
-            {
-                <td></td>
-                <td>
-                    <a href="{{ url('rit', { 'id': dag_entry.getRit.id }) }}">
-                        @day.Ride.GetDistanceInKilometers()
-                        @Html.Raw("km - ")
-                        @day.Ride.GetSpeed()
-                        @Html.Raw("km/u")
-                    </a>
-                </td>
-            }
-            <td>@day.GetTimeSpendDisplay()</td>
-        </tr>
+                    </td>
+                }
+                else if (day.Ride is Ride)
+                {
+                    <td></td>
+                    <td>
+                        <a href="{{ url('rit', { 'id': dag_entry.getRit.id }) }}">
+                            @day.Ride.GetDistanceInKilometers()
+                            @Html.Raw("km - ")
+                            @day.Ride.GetSpeed()
+                            @Html.Raw("km/u")
+                        </a>
+                    </td>
+                }
+                <td>@day.GetTimeSpendDisplay()</td>
+            </tr>
         }
     </tbody>
 </table>

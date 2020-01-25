@@ -37,6 +37,9 @@ namespace Locatie
             services.AddTransient<IDayRepository, DayRepository>();
             services.AddTransient<ITagRepository, TagRepository>();
 
+            // App settings
+            services.Configure<Utils.AppSettings>(Configuration);
+
             // MVC
             services.AddControllersWithViews();
         }

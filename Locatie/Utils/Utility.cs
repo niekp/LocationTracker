@@ -8,10 +8,6 @@ namespace Locatie.Utils
 {
     public class Utility
     {
-        public Utility()
-        {
-        }
-
         public double GetDistanceInMeters(List<Ping> pings)
 	    {
 			Ping previous = null;
