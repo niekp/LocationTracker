@@ -43,7 +43,7 @@ namespace Locatie.Data
             modelBuilder.Entity<RideTag>()
                 .HasOne(rt => rt.Tag)
                 .WithMany(t => t.Rides)
-                .HasForeignKey(rt => rt.TagId);
+                .HasForeignKey(bc => bc.TagId);
         }
 
     }
