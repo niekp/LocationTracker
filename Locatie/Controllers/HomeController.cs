@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Locatie.Models;
 using Locatie.Repositories.Core;
+using System.Globalization;
 
 namespace Locatie.Controllers
 {
@@ -27,11 +28,16 @@ namespace Locatie.Controllers
             this.dayRepository = dayRepository;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string date = "")
         {
-            var date = DateTime.Now.Date.AddDays(-7);
-            var days = await dayRepository.GetDays(date, date.AddDays(1).AddMinutes(-1));
-            ViewBag.Date = date;
+            if (string.IsNullOrEmpty(date) ||
+                !(DateTime.TryParseExact(date, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime _date)))
+            {
+                _date = DateTime.Now.Date;
+            }   
+            
+            var days = await dayRepository.GetDays(_date, _date.AddDays(1).AddMinutes(-1));
+            ViewBag.Date = _date;
             return View(days);
         }
 

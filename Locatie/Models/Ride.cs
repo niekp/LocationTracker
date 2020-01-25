@@ -18,7 +18,7 @@ namespace Locatie.Models
         public DateTime TimeTo { get; set; }
 
         [Column("afstand_meter")]
-        public int DistanceInMeters { get; set; }
+        public int? DistanceInMeters { get; set; }
 
         public ICollection<RideTag> Tags { get; set; }
 

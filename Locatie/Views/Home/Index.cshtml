@@ -18,7 +18,7 @@
 
 
 		function changeDate(schuif) {
-			var url = "{{ url('home') }}";
+            var url = "@Url.Action("Index", "Home")";
 
 			var date = $("#date").val();
 
@@ -28,14 +28,14 @@
 				date = DateToString(dtm);
 			}
 
-			window.location.href = url += "/" + date;
+			window.location.href = url += "?date=" + date;
 		}
     </script>
 }
 
 <div class="form-group">
     <label for="date" class="sr-only">Datum</label>
-    <input type="text" name="date" id="date" class="form-control" value="@date.ToString("dd-MM-yyyy")" onchange="changeDate();" style="width: calc(100% - 78px);float: left;">
+    <input type="text" name="date" id="date" class="form-control" value="@date.ToString("dd-MM-yyyy")" onchange="changeDate();" style="width: calc(100% - 90px);float: left;">
     <div class="buttons" style="float:right;margin-left:5px">
         <input type="button" class="btn btn-primary" value="<" onclick="changeDate(-1);">
         <input type="button" class="btn btn-primary" value=">" onclick="changeDate(1);">
