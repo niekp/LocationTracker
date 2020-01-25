@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,5 +16,6 @@ namespace Locatie.Models
 
         public Ride Ride { get; set; }
         public Tag Tag { get; set; }
+
     }
 }

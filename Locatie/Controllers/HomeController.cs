@@ -14,20 +14,25 @@ namespace Locatie.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IPingRepository pingRepository;
+        private readonly IDayRepository dayRepository;
 
         public HomeController(
             ILogger<HomeController> logger,
-            IPingRepository pingRepository
+            IPingRepository pingRepository,
+            IDayRepository dayRepository
         )
         {
             _logger = logger;
             this.pingRepository = pingRepository;
+            this.dayRepository = dayRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            ViewBag.Ping = pingRepository.GetLastPing();
-            return View();
+            var date = DateTime.Now.Date.AddDays(-6);
+            var days = await dayRepository.GetDays(date, date.AddDays(1).AddMinutes(-1));
+            ViewBag.Date = date;
+            return View(days);
         }
 
         public IActionResult Privacy()

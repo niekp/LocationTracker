@@ -12,12 +12,14 @@
     <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.19" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
     <PackageReference Include="bootstrap" Version="4.4.1" />
+    <PackageReference Include="Geodesy" Version="2.0.5" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Repositories\" />
     <Folder Include="Repositories\Core\" />
     <Folder Include="Repositories\Persistence\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="mono_crash.8682cc0d8.0.json" />

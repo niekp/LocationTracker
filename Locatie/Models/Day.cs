@@ -27,5 +27,27 @@ namespace Locatie.Models
         public Ride Ride { get; set; }
 
         public ICollection<DayPing> Pings { get; set; }
+
+        public string GetTimeDisplay()
+        {
+            if (TimeFrom.Date == DateTime.Now.Date)
+                return TimeFrom.Date.ToString("HH:mm");
+            if (TimeFrom.Year != DateTime.Now.Year)
+                return TimeTo.ToString("dd-MM-yyyy HH:mm");
+            else
+                return TimeTo.ToString("HH:mm");
+        }
+
+        public string GetTimeSpendDisplay()
+        {
+            var timeSpend = (TimeTo - TimeFrom);
+            return String.Format("{0:00}:{1:00}",
+                Convert.ToInt32(
+                    timeSpend.Hours + (Math.Floor(timeSpend.TotalDays) * 24)
+                ),
+                timeSpend.Minutes
+            );
+        }
+
     }
 }
