@@ -59,7 +59,7 @@
                 @if (day.Location is Location)
                 {
                     <td>
-                        @Html.ActionLink(day.Location.Label, "History", "Location", new { id = day.Location.Id })
+                        @Html.ActionLink(day.Location.Label, "Index", "Location", new { id = day.Location.Id })
                     </td>
                     <td>
                         @if (day.Id == Model.Last().Id
@@ -86,7 +86,7 @@
                 {
                     <td></td>
                     <td>
-                        <a href="{{ url('rit', { 'id': dag_entry.getRit.id }) }}">
+                        <a href="@Url.Action("Index", "Ride", new { id = day.Ride.Id })">
                             @day.Ride.GetDistanceInKilometers()
                             @Html.Raw("km - ")
                             @day.Ride.GetSpeed()

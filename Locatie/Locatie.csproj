@@ -21,6 +21,7 @@
     <Folder Include="Repositories\Persistence\" />
     <Folder Include="Utils\" />
     <Folder Include="Views\Location\" />
+    <Folder Include="Views\Ride\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="mono_crash.8682cc0d8.0.json" />

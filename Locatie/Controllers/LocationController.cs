@@ -19,15 +19,8 @@ namespace Locatie.Controllers
         {
             this.locationRepository = locationRepository;
         }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
             
-            
-        public async Task<IActionResult> History(int id, string from = "", string to = "")
+        public async Task<IActionResult> Index(int id, string from = "", string to = "")
         {
             var location = await locationRepository.GetByIdWithHistory(id);
 

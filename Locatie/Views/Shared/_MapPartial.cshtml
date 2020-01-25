@@ -104,11 +104,9 @@
     // Markers
 
     markers.forEach(marker => {
-        var latitude = parseFloat(marker.dataset.lat);
-        var longitude = parseFloat(marker.dataset.long);
         var marker = new H.map.Marker({
-            lat: latitude,
-            lng: longitude
+            lat: parseFloat(marker.dataset.lat),
+            lng: parseFloat(marker.dataset.long)
         });
 
         group.addObject(marker);

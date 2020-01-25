@@ -6,7 +6,7 @@
 @section Scripts {
     <script type="text/javascript">
 		function changeDatum() {
-            var url = "@Url.Action("History", "Location", new { id = Model.Id })";
+            var url = "@Url.Action("Index", "Location", new { id = Model.Id })";
 
 			var start = $("#start").val();
 			var eind = $("#eind").val();
