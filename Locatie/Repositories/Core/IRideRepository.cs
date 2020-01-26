@@ -7,6 +7,7 @@ namespace Locatie.Repositories.Core
 {
     public interface IRideRepository : IRepository<Ride>
     {
-        public Task<Ride> GetByIdWithPings(int id);
+        public Task<Ride> GetByIdFull(int id);
+        public Task SetTags(int rideId, string tags);
     }
 }

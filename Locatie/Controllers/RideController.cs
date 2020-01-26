@@ -13,23 +13,35 @@ namespace Locatie.Controllers
     public class RideController : Controller
     {
         private readonly IRideRepository rideRepository;
+        private readonly ITagRepository tagRepository;
 
         public RideController(
-            IRideRepository rideRepository
+            IRideRepository rideRepository,
+            ITagRepository tagRepository
         )
         {
             this.rideRepository = rideRepository;
+            this.tagRepository = tagRepository;
         }
 
         public async Task<IActionResult> Index(int id)
         {
-            var ride = await rideRepository.GetByIdWithPings(id);
+            var ride = await rideRepository.GetByIdFull(id);
             if (!(ride is Ride))
             {
                 return RedirectToAction("Index", "Home");
             }
 
             return View(ride);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(Ride ride)
+        {
+            string tagLabels = Request.Form["tags"];
+            await rideRepository.SetTags(ride.Id, tagLabels);
+
+            return RedirectToAction("Index", "Ride", new { id = ride.Id });
         }
     }
 }

@@ -13,15 +13,20 @@
 <partial name="_MapPartial" model="new MapData { Rides = new List<Ride> { Model } }" />
 
 <h4>Taggen</h4>
-<form action="{{ url('rit_save') }}" method="post">
-    <input type="hidden" name="id" value="{{ rit.id }}" />
-    <div class="form-group">
-        <input type="text" name="tags" value="{{ tags }}" class="form-control" id="tags" aria-describedby="tagsHelp" placeholder="Tags">
-        <small id="tagsHelp" class="form-text text-muted">Komma gescheiden.</small>
-    </div>
-    <input type="submit" class="btn btn-primary" value="Opslaan">
-</form>
-<hr />
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <div class="form-group row">
+            <label for="location" class="col-sm-2 col-form-label">Tags</label>
+            <div class="col-sm-10">
+                <input name="tags" value="@string.Join(',', Model.Tags.Select(t => t.Tag.Label).ToList())" class="form-control" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Opslaan</button>
+    </fieldset>
+}
+<!--
 <h4>Rit verwijderen</h4>
 <form action="{{ url('rit_delete') }}" method="post" onsubmit="return confirm('Weet je het zeker?')">
     <input type="hidden" name="id" value="{{ rit.id }}" />
@@ -35,3 +40,4 @@
 
     <input type="submit" class="btn btn-primary" value="Verwijder">
 </form>
+-->
