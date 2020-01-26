@@ -11,5 +11,6 @@ namespace Locatie.Repositories.Core
         Task<Day> GetPrevious(Day day);
         Task<Day> GetNext(Day day);
         Task MergeLocation(int fromId, int toId);
+        Task DeleteDay(int id, bool removePings = false);
     }
 }

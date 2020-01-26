@@ -52,100 +52,11 @@ namespace Locatie.Controllers
             return RedirectToAction("Index", "Location", new { id = oldLocationId });
         }
 
-        public async Task<IActionResult> Delete(int id, bool removePings = false)
+        public async Task<IActionResult> Delete(int id)
         {
             var day = await dayRepository.GetByIdAsync(id);
             var returnLocationId = day.LocationId;
-            var pings = new List<Ping>();
-
-            // Find the previous day
-            var previousDay = await dayRepository.GetPrevious(day);
-
-            // Merge with the previous day
-            if (previousDay is Day)
-            {
-                // Up the end time of the previous record
-                previousDay.TimeTo = day.TimeTo;
-                dayRepository.Update(previousDay);
-
-                var rideId = previousDay.RideId;
-                var locationId = previousDay.LocationId;
-                var dayId = previousDay.Id;
-
-                // Update the pings of the to be deleted day to the location of the previous day
-                pings = await pingRepository.GetPings(day);
-                foreach (var ping in pings)
-                {
-                    if (!removePings)
-                    {
-                        ping.RideId = rideId;
-                        ping.LocationId = locationId;
-                        ping.DayId = dayId;
-                        pingRepository.Update(ping);
-                    }
-                    else
-                    {
-                        pingRepository.Delete(ping.Id);
-                    }
-                }
-
-                // Check if the previous record is a ride. This also needs to be extended
-                if (previousDay.Ride is Ride)
-                {
-                    previousDay.Ride.TimeTo = day.TimeTo;
-                    rideRepository.Update(previousDay.Ride);
-                    var nextDay = await dayRepository.GetNext(day);
-
-                    // Is the next record also a ride, Merge them together.
-                    if (nextDay is Day && nextDay.Ride is Ride)
-                    {
-                        previousDay.TimeTo = nextDay.TimeTo;
-                        previousDay.Ride.TimeTo = nextDay.TimeTo;
-                        previousDay.Ride.DistanceInMeters = null;
-
-                        pings = await pingRepository.GetPings(nextDay);
-                        foreach (var ping in pings)
-                        {
-                            ping.RideId = rideId;
-                            ping.LocationId = locationId;
-                            ping.DayId = dayId;
-                            pingRepository.Update(ping);
-                        }
-
-                        rideRepository.Delete(nextDay.Ride.Id);
-                        dayRepository.Delete(nextDay.Id);
-                    }
-                }
-
-                dayRepository.Update(previousDay);
-                dayRepository.Save();
-
-                if (day.Ride is Ride)
-                {
-                    // The previous merge actions removed all pings.
-                    // But in case any pings didn't get moved double check by selecting with the ride instead of the day.
-                    pings = await pingRepository.GetPings(day.Ride);
-                    foreach (var ping in pings)
-                    {
-                        if (!removePings)
-                        {
-                            ping.RideId = rideId;
-                            ping.LocationId = locationId;
-                            ping.DayId = dayId;
-                            pingRepository.Update(ping);
-                        }
-                        else
-                        {
-                            pingRepository.Delete(ping.Id);
-                        }
-                    }
-
-                    rideRepository.Delete(day.Ride.Id);
-                }
-            }
-
-            dayRepository.Delete(day.Id);
-            dayRepository.Save();
+            await dayRepository.DeleteDay(day.Id, false);
 
             return RedirectToAction("Index", "Location", new { id = returnLocationId });
         }

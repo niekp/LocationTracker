@@ -14,14 +14,17 @@ namespace Locatie.Controllers
     {
         private readonly IRideRepository rideRepository;
         private readonly ITagRepository tagRepository;
+        private readonly IDayRepository dayRepository;
 
         public RideController(
             IRideRepository rideRepository,
-            ITagRepository tagRepository
+            ITagRepository tagRepository,
+            IDayRepository dayRepository
         )
         {
             this.rideRepository = rideRepository;
             this.tagRepository = tagRepository;
+            this.dayRepository = dayRepository;
         }
 
         public async Task<IActionResult> Index(int id)
@@ -50,8 +53,12 @@ namespace Locatie.Controllers
             var deletePings = Request.Form["deletePings"];
             ride = await rideRepository.GetByIdFull(ride.Id);
 
-            // Delegate the deleting to the day controller.
-            return RedirectToAction("Delete", "Day", new { id = ride.Day.Id, removePings = deletePings == "1" });
+            if (ride is Ride)
+            {
+                await dayRepository.DeleteDay(ride.Day.Id, deletePings == "1");
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
     }
