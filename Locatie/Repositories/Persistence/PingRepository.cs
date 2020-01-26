@@ -21,6 +21,12 @@ namespace Locatie.Repositories.Persistence
             return day.Pings.ToList();
         }
 
+        public async Task<List<Ping>> GetPings(Ride ride)
+        {
+            await db.Entry(ride).Collection(x => x.Pings).LoadAsync();
+            return ride.Pings.ToList();
+        }
+
         public async Task MergeLocation(int fromId, int toId)
         {
             var pings = await dbSet.Where(p => p.LocationId == fromId).ToListAsync();

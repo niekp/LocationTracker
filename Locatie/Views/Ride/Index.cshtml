@@ -13,9 +13,10 @@
 <partial name="_MapPartial" model="new MapData { Rides = new List<Ride> { Model } }" />
 
 <h4>Taggen</h4>
-@using (Html.BeginForm())
+@using (Html.BeginForm("SaveTags", "Ride", FormMethod.Post))
 {
     <fieldset>
+        @Html.HiddenFor(o => o.Id)
         <div class="form-group row">
             <label for="location" class="col-sm-2 col-form-label">Tags</label>
             <div class="col-sm-10">
@@ -24,6 +25,25 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Opslaan</button>
+    </fieldset>
+}
+
+<h4 class="mt-4">Verwijderen</h4>
+@using (Html.BeginForm("Delete", "Ride", FormMethod.Post))
+{
+    <fieldset>
+        @Html.HiddenFor(o => o.Id)
+        <div class="form-group row">
+            <label for="location" class="col-sm-2 col-form-label">Pings</label>
+            <div class="col-sm-10">
+                <label class="form-check-label">
+                    <input class="form-check-input" name="deletePings" type="checkbox" value="1">
+                    Verwijder pings
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Verwijderen</button>
     </fieldset>
 }
 <!--

@@ -26,6 +26,7 @@ namespace Locatie.Repositories.Persistence
             return dbSet.Where(r => r.Id == id)
                 .Include(r => r.Pings)
                 .Include(r => r.Tags)
+                .Include(r => r.Day)
                 .Include("Tags.Tag")
                 .FirstOrDefaultAsync();
         }
@@ -33,6 +34,10 @@ namespace Locatie.Repositories.Persistence
         public async Task SetTags(int rideId, string tags)
         {
             var ride = await GetByIdFull(rideId);
+            if (!(ride is Ride))
+            {
+                throw new ArgumentException("Ride not found");
+            }
 
             var oldTagIds = ride.Tags.Select(t => t.TagId).ToList();
             var newTagIds = new List<int>();

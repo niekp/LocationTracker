@@ -24,6 +24,8 @@ namespace Locatie.Models
 
         public ICollection<Ping> Pings { get; set; }
 
+        public Day Day { get; set; }
+
         private double? _distance = null;
         private double GetDistanceInMeters()
         {

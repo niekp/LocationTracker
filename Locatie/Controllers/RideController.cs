@@ -36,12 +36,23 @@ namespace Locatie.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(Ride ride)
+        public async Task<IActionResult> SaveTags(Ride ride)
         {
             string tagLabels = Request.Form["tags"];
             await rideRepository.SetTags(ride.Id, tagLabels);
 
             return RedirectToAction("Index", "Ride", new { id = ride.Id });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(Ride ride)
+        {
+            var deletePings = Request.Form["deletePings"];
+            ride = await rideRepository.GetByIdFull(ride.Id);
+
+            // Delegate the deleting to the day controller.
+            return RedirectToAction("Delete", "Day", new { id = ride.Day.Id, removePings = deletePings == "1" });
+        }
+
     }
 }

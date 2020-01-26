@@ -52,10 +52,11 @@ namespace Locatie.Controllers
             return RedirectToAction("Index", "Location", new { id = oldLocationId });
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, bool removePings = false)
         {
             var day = await dayRepository.GetByIdAsync(id);
             var returnLocationId = day.LocationId;
+            var pings = new List<Ping>();
 
             // Find the previous day
             var previousDay = await dayRepository.GetPrevious(day);
@@ -72,13 +73,20 @@ namespace Locatie.Controllers
                 var dayId = previousDay.Id;
 
                 // Update the pings of the to be deleted day to the location of the previous day
-                var pings = await pingRepository.GetPings(day);
+                pings = await pingRepository.GetPings(day);
                 foreach (var ping in pings)
                 {
-                    ping.RideId = rideId;
-                    ping.LocationId = locationId;
-                    ping.DayId = dayId;
-                    pingRepository.Update(ping);
+                    if (!removePings)
+                    {
+                        ping.RideId = rideId;
+                        ping.LocationId = locationId;
+                        ping.DayId = dayId;
+                        pingRepository.Update(ping);
+                    }
+                    else
+                    {
+                        pingRepository.Delete(ping.Id);
+                    }
                 }
 
                 // Check if the previous record is a ride. This also needs to be extended
@@ -110,6 +118,30 @@ namespace Locatie.Controllers
                 }
 
                 dayRepository.Update(previousDay);
+                dayRepository.Save();
+
+                if (day.Ride is Ride)
+                {
+                    // The previous merge actions removed all pings.
+                    // But in case any pings didn't get moved double check by selecting with the ride instead of the day.
+                    pings = await pingRepository.GetPings(day.Ride);
+                    foreach (var ping in pings)
+                    {
+                        if (!removePings)
+                        {
+                            ping.RideId = rideId;
+                            ping.LocationId = locationId;
+                            ping.DayId = dayId;
+                            pingRepository.Update(ping);
+                        }
+                        else
+                        {
+                            pingRepository.Delete(ping.Id);
+                        }
+                    }
+
+                    rideRepository.Delete(day.Ride.Id);
+                }
             }
 
             dayRepository.Delete(day.Id);
