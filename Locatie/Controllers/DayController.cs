@@ -44,6 +44,7 @@ namespace Locatie.Controllers
 
                 var rideId = previousDay.RideId;
                 var locationId = previousDay.LocationId;
+                var dayId = previousDay.Id;
 
                 // Update the pings of the to be deleted day to the location of the previous day
                 var pings = await pingRepository.GetPings(day);
@@ -51,6 +52,7 @@ namespace Locatie.Controllers
                 {
                     ping.RideId = rideId;
                     ping.LocationId = locationId;
+                    ping.DayId = dayId;
                     pingRepository.Update(ping);
                 }
 
@@ -73,6 +75,7 @@ namespace Locatie.Controllers
                         {
                             ping.RideId = rideId;
                             ping.LocationId = locationId;
+                            ping.DayId = dayId;
                             pingRepository.Update(ping);
                         }
 

@@ -26,7 +26,7 @@ namespace Locatie.Models
 
         public Ride Ride { get; set; }
 
-        public ICollection<DayPing> Pings { get; set; }
+        public ICollection<Ping> Pings { get; set; }
 
         public string GetTimeDisplay()
         {

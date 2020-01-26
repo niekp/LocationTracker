@@ -32,7 +32,10 @@ namespace Locatie.Models
 
         public Ride Ride { get; set; }
 
-        public ICollection<DayPing> Days { get; set; }
+        [Column("dag_id")]
+        public int? DayId { get; set; }
+
+        public Day Day { get; set; }
 
     }
 }
