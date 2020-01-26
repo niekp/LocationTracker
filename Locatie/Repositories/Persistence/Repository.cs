@@ -24,7 +24,7 @@ namespace Locatie.Repositories.Persistence
             return await dbSet.ToListAsync();
         }
 
-        public Task<T> GetByIdAsync(object id)
+        public virtual Task<T> GetByIdAsync(object id)
         {
             return dbSet.FindAsync(id);
         }

@@ -27,8 +27,8 @@
     </div>
     <div class="col-12 col-sm-12 col-md-7 col-lg-8 mt-3" style="text-align:right;">
         <input type="button" class="btn btn-primary" onclick="window.location.href='{{ url('locatie_merge', { 'id': locatie.id }) }}'" value="samenvoegen">
-        <input type="button" class="btn btn-primary" onclick="window.location.href='{{ url('locatie_edit', { 'id': locatie.id }) }}'" value="Wijzig">
-        <input type="button" class="btn btn-primary" onclick="window.open('https://www.google.com/maps/search/{{locatie.getLatitude}},{{locatie.getLongitude}}', '_blank');" value="Navigeer">
+        @Html.ActionLink("Wijzigen", "Edit", "Location", new { id = Model.Id }, new { @class = "btn btn-primary" })
+        <input type="button" class="btn btn-primary" onclick="window.open('https://www.google.com/maps/search/@Model.Latitude,@Model.Longitude', '_blank');" value="Navigeer">
     </div>
 </div>
 
@@ -65,7 +65,7 @@
                     }
                 </td>
                 <td>@day.GetTimeSpendDisplay()</td>
-                <td style='width:16px;'><a href=''>wijzig</a></td>
+                <td style='width:16px;'>@Html.ActionLink("wijzig", "Edit", "Day", new { id = day.Id })</td>
                 <td style='width:16px;'><a onclick="return confirm('Weet je het zeker?');" href='@Url.Action("Delete", "Day", new { id = day.Id })'>verwijder</a></td>
             </tr>
         }

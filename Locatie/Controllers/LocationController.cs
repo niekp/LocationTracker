@@ -47,5 +47,23 @@ namespace Locatie.Controllers
             return View(location);
         }
 
+        public async Task<IActionResult> Edit(int id)
+        {
+            var location = await locationRepository.GetByIdAsync(id);
+            return View(location);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Location location)
+        {
+            var _location = await locationRepository.GetByIdAsync(location.Id);
+            _location.Label = location.Label;
+            _location.Latitude = location.Latitude;
+            _location.Longitude = location.Longitude;
+            locationRepository.Update(_location);
+            locationRepository.Save();
+
+            return RedirectToAction("Index", "Location", new { id = location.Id });
+        }
     }
 }

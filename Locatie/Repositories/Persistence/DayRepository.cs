@@ -15,6 +15,14 @@ namespace Locatie.Repositories.Persistence
         {
         }
 
+        public override async Task<Day> GetByIdAsync(object id)
+        {
+            return await dbSet.Where(d => d.Id == (int)id)
+                .Include(d => d.Location)
+                .Include(d => d.Ride)
+                .FirstOrDefaultAsync();
+        }
+
         public Task<List<Day>> GetDays(DateTime From, DateTime To)
         {
             return dbSet.Where(d =>
