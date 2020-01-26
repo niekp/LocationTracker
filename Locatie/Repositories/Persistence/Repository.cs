@@ -51,5 +51,10 @@ namespace Locatie.Repositories.Persistence
             db.SaveChanges();
         }
 
+        public Task SaveAsync()
+        {
+            return db.SaveChangesAsync();
+        }
+
     }
 }

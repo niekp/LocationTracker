@@ -26,9 +26,9 @@
         <input type="button" class="btn btn-primary" value="Go" onclick="changeDatum();">&nbsp;&nbsp;&nbsp;
     </div>
     <div class="col-12 col-sm-12 col-md-7 col-lg-8 mt-3" style="text-align:right;">
-        <input type="button" class="btn btn-primary" onclick="window.location.href='{{ url('locatie_merge', { 'id': locatie.id }) }}'" value="samenvoegen">
+        @Html.ActionLink("Samenvoegen", "Merge", "Location", new { id = Model.Id }, new { @class = "btn btn-primary" })
         @Html.ActionLink("Wijzigen", "Edit", "Location", new { id = Model.Id }, new { @class = "btn btn-primary" })
-        <input type="button" class="btn btn-primary" onclick="window.open('https://www.google.com/maps/search/@Model.Latitude,@Model.Longitude', '_blank');" value="Navigeer">
+        <input type="button" class="btn btn-primary" onclick="window.open('https://www.google.com/maps/search/@Model.Latitude,@Model.Longitude', '_blank');" value="Navigeren">
     </div>
 </div>
 

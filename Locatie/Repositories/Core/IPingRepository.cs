@@ -8,5 +8,6 @@ namespace Locatie.Repositories.Core
     public interface IPingRepository : IRepository<Ping>
     {
         Task<List<Ping>> GetPings(Day day);
+        Task MergeLocation(int fromId, int toId);
     }
 }

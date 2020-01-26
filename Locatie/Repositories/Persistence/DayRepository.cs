@@ -60,5 +60,17 @@ namespace Locatie.Repositories.Persistence
                 .Take(1)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task MergeLocation(int fromId, int toId)
+        {
+            var days = await dbSet.Where(d => d.LocationId == fromId).ToListAsync();
+
+            foreach (var day in days)
+            {
+                day.LocationId = toId;
+            }
+
+            await SaveAsync();
+        }
     }
 }

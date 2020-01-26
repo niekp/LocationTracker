@@ -10,5 +10,6 @@ namespace Locatie.Repositories.Core
         Task<List<Day>> GetDays(DateTime From, DateTime To);
         Task<Day> GetPrevious(Day day);
         Task<Day> GetNext(Day day);
+        Task MergeLocation(int fromId, int toId);
     }
 }

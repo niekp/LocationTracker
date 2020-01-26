@@ -20,5 +20,17 @@ namespace Locatie.Repositories.Persistence
             await db.Entry(day).Collection(x => x.Pings).LoadAsync();
             return day.Pings.ToList();
         }
+
+        public async Task MergeLocation(int fromId, int toId)
+        {
+            var pings = await dbSet.Where(p => p.LocationId == fromId).ToListAsync();
+
+            foreach (var ping in pings)
+            {
+                ping.LocationId = toId;
+            }
+
+            await SaveAsync();
+        }
     }
 }

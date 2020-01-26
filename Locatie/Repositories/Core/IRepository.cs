@@ -12,5 +12,6 @@ namespace Locatie.Repositories.Core
         void Update(T obj);
         void Delete(object id);
         void Save();
+        Task SaveAsync();
     }
 }
