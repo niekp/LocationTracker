@@ -12,5 +12,7 @@ namespace Locatie.Repositories.Core
         Task<Ping> GetLastPing();
 
         Task MergeLocation(int fromId, int toId);
+
+        Task DeleteBetweenDates(DateTime from, DateTime to);
     }
 }

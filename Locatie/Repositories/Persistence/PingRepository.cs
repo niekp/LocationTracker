@@ -15,6 +15,17 @@ namespace Locatie.Repositories.Persistence
         {
         }
 
+        public async Task DeleteBetweenDates(DateTime from, DateTime to)
+        {
+            var pings = await dbSet.Where(p => p.Time >= from && p.Time <= to).ToListAsync();
+            foreach (var ping in pings)
+            {
+                Delete(ping.Id);
+            }
+
+            await db.SaveChangesAsync();
+        }
+
         public Task<Ping> GetLastPing()
         {
             return dbSet.OrderByDescending(p => p.Time).Take(1).FirstOrDefaultAsync();
