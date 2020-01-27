@@ -26,8 +26,14 @@ namespace Locatie.Controllers
             this.pingRepository = pingRepository;
             this.dayRepository = dayRepository;
         }
+
+        public async Task<IActionResult> Index()
+        {
+            var locations = await locationRepository.GetAllASync();
+            return View(locations.OrderBy(l => l.Label));
+        }
             
-        public async Task<IActionResult> Index(int id, string from = "", string to = "")
+        public async Task<IActionResult> History(int id, string from = "", string to = "")
         {
             var location = await locationRepository.GetByIdWithHistory(id);
 
@@ -70,7 +76,7 @@ namespace Locatie.Controllers
             locationRepository.Update(_location);
             locationRepository.Save();
 
-            return RedirectToAction("Index", "Location", new { id = location.Id });
+            return RedirectToAction("History", "Location", new { id = location.Id });
         }
 
         public async Task<IActionResult> Merge(int id)
@@ -94,8 +100,49 @@ namespace Locatie.Controllers
             locationRepository.Delete(location.Id);
             await locationRepository.SaveAsync();
 
-            return RedirectToAction("Index", "Location", new { id = newLocationId });
+            return RedirectToAction("History", "Location", new { id = newLocationId });
 
+        }
+
+        public async Task<IActionResult> Delete(int Id)
+        {
+            var location = await locationRepository.GetByIdWithHistory(Id);
+            if (location is Location)
+            {
+                locationRepository.Delete(Id);
+                locationRepository.Save();
+            }
+
+            return RedirectToAction("Index", "Location");
+        }
+
+        public async Task<IActionResult> New()
+        {
+            var location = new Location();
+            var lastPing = await pingRepository.GetLastPing();
+            if(lastPing is Ping)
+            {
+                location.Latitude = lastPing.Latitude;
+                location.Longitude = lastPing.Longitude;
+            }
+
+            return View(location);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> New(Location location)
+        {
+            if (ModelState.IsValid)
+            {
+                locationRepository.Insert(location);
+                await locationRepository.SaveAsync();
+            }
+            else
+            {
+                return View(location);
+            }
+
+            return RedirectToAction("History", "Location", new { id = location.Id });
         }
 
     }

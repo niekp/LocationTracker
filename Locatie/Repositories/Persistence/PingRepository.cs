@@ -15,6 +15,11 @@ namespace Locatie.Repositories.Persistence
         {
         }
 
+        public Task<Ping> GetLastPing()
+        {
+            return dbSet.OrderByDescending(p => p.Time).Take(1).FirstOrDefaultAsync();
+        }
+
         public async Task<List<Ping>> GetPings(Day day)
         {
             await db.Entry(day).Collection(x => x.Pings).LoadAsync();

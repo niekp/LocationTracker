@@ -9,6 +9,8 @@ namespace Locatie.Repositories.Core
     {
         Task<List<Ping>> GetPings(Day day);
         Task<List<Ping>> GetPings(Ride day);
+        Task<Ping> GetLastPing();
+
         Task MergeLocation(int fromId, int toId);
     }
 }

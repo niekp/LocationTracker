@@ -49,7 +49,7 @@ namespace Locatie.Controllers
             dayRepository.Update(_day);
             dayRepository.Save();
 
-            return RedirectToAction("Index", "Location", new { id = oldLocationId });
+            return RedirectToAction("History", "Location", new { id = oldLocationId });
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -58,7 +58,7 @@ namespace Locatie.Controllers
             var returnLocationId = day.LocationId;
             await dayRepository.DeleteDay(day.Id, false);
 
-            return RedirectToAction("Index", "Location", new { id = returnLocationId });
+            return RedirectToAction("History", "Location", new { id = returnLocationId });
         }
     }
 }
