@@ -1,0 +1,22 @@
+﻿@model List<Tag>
+@{
+    ViewData["Title"] = "Tags";
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr><th>Label</th><th>Actie</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var tag in Model)
+        {
+            <tr>
+                <td>@tag.Label</td>
+                <td>
+                    @Html.ActionLink("Wijzigen", "Edit", "Tag", new { id = tag.Id }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Verwijderen", "Delete", "Tag", new { id = tag.Id }, new { @class = "btn btn-primary", @onclick = "return confirm('Weet je het zeker?');" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

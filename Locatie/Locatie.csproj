@@ -24,6 +24,7 @@
     <Folder Include="Views\Ride\" />
     <Folder Include="Migrations\" />
     <Folder Include="Views\Day\" />
+    <Folder Include="Views\Tag\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="mono_crash.8682cc0d8.0.json" />

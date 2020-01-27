@@ -30,7 +30,7 @@ namespace Locatie.Controllers
         public async Task<IActionResult> Index()
         {
             var locations = await locationRepository.GetAllASync();
-            return View(locations.OrderBy(l => l.Label));
+            return View(locations.OrderBy(l => l.Label).ToList());
         }
             
         public async Task<IActionResult> History(int id, string from = "", string to = "")
