@@ -13,6 +13,10 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
     <PackageReference Include="bootstrap" Version="4.4.1" />
     <PackageReference Include="Geodesy" Version="2.0.5" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.9" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.7.9" />
+    <PackageReference Include="Hangfire.Storage.SQLite" Version="0.2.4" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.9" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -25,6 +29,8 @@
     <Folder Include="Migrations\" />
     <Folder Include="Views\Day\" />
     <Folder Include="Views\Tag\" />
+    <Folder Include="Views\Import\" />
+    <Folder Include="Jobs\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="mono_crash.8682cc0d8.0.json" />

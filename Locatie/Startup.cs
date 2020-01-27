@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire;
+using Hangfire.SqlServer;
+using Hangfire.Storage.SQLite;
 using Locatie.Data;
 using Locatie.Repositories.Core;
 using Locatie.Repositories.Persistence;
@@ -37,6 +40,15 @@ namespace Locatie
             services.AddTransient<IDayRepository, DayRepository>();
             services.AddTransient<ITagRepository, TagRepository>();
 
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSQLiteStorage());
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
+
             // App settings
             services.Configure<Utils.AppSettings>(Configuration);
 
@@ -59,6 +71,8 @@ namespace Locatie
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseHangfireDashboard();
 
             app.UseRouting();
 
