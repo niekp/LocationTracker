@@ -8,5 +8,6 @@ namespace Locatie.Repositories.Core
     public interface ILocationRepository : IRepository<Location>
     {
         Task<Location> GetByIdWithHistory(int id);
+        Task<Dictionary<Location, double>> GetByCoordinates(double latitude, double longitude);
     }
 }

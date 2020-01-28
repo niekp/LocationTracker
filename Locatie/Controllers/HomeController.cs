@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Locatie.Models;
 using Locatie.Repositories.Core;
 using System.Globalization;
+using Hangfire;
 
 namespace Locatie.Controllers
 {
@@ -39,6 +40,12 @@ namespace Locatie.Controllers
             var days = await dayRepository.GetDays(_date, _date.AddDays(1).AddMinutes(-1));
             ViewBag.Date = _date;
             return View(days);
+        }
+
+        public string Process()
+        {
+            BackgroundJob.Enqueue<Jobs.ProcessPings>(x => x.Process());
+            return "ok";
         }
 
         public IActionResult Privacy()

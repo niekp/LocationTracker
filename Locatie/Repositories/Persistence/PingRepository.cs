@@ -26,9 +26,26 @@ namespace Locatie.Repositories.Persistence
             await db.SaveChangesAsync();
         }
 
-        public Task<Ping> GetLastPing()
+        public Task<Ping> GetLastPing(bool onlyProcessed = false)
         {
-            return dbSet.OrderByDescending(p => p.Time).Take(1).FirstOrDefaultAsync();
+            return dbSet
+                .Where(p => !onlyProcessed || p.Processed == 1)
+                .OrderByDescending(p => p.Time)
+                .Include(p => p.Ride)
+                .Include(p => p.Location)
+                .Take(1)
+                .FirstOrDefaultAsync();
+        }
+
+        public Task<List<Ping>> GetLastPings(bool onlyProcessed = false, int amount = 1)
+        {
+            return dbSet
+                .Where(p => !onlyProcessed || p.Processed == 1)
+                .OrderByDescending(p => p.Time)
+                .Include(p => p.Ride)
+                .Include(p => p.Location)
+                .Take(amount)
+                .ToListAsync();
         }
 
         public async Task<List<Ping>> GetPings(Day day)
@@ -41,6 +58,11 @@ namespace Locatie.Repositories.Persistence
         {
             await db.Entry(ride).Collection(x => x.Pings).LoadAsync();
             return ride.Pings.ToList();
+        }
+
+        public Task<List<Ping>> GetUnprocessed()
+        {
+            return dbSet.Where(p => p.Processed == 0).OrderBy(p => p.Time).ToListAsync();
         }
 
         public async Task MergeLocation(int fromId, int toId)

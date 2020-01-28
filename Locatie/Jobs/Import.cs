@@ -38,7 +38,7 @@ namespace Locatie.Jobs
 
                 var location = new Location()
                 {
-                    Label = String.Format("Import WP{0} ({1})", name, DateTime.Now.ToShortDateString()),
+                    Label = string.Format("Import WP{0} ({1})", name, DateTime.Now.ToShortDateString()),
                     Latitude = latitude,
                     Longitude = longitude
                 };

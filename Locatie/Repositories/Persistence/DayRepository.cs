@@ -176,5 +176,10 @@ namespace Locatie.Repositories.Persistence
             Delete(day.Id);
             await SaveAsync();
         }
+
+        public async Task<Day> GetByRide(Ride ride)
+        {
+            return await dbSet.Where(d => d.RideId == ride.Id).FirstOrDefaultAsync();
+        }
     }
 }

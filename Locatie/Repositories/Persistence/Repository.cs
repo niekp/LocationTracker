@@ -19,7 +19,7 @@ namespace Locatie.Repositories.Persistence
             dbSet = db.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAllASync()
+        public virtual async Task<IEnumerable<T>> GetAllASync()
         {
             return await dbSet.ToListAsync();
         }
