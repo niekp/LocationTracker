@@ -37,17 +37,9 @@ namespace Locatie.Jobs
 
         public async Task Process()
         {
-            // TODO: Temp test stuff
-            /*
-            locatieContext.Database.ExecuteSqlCommand(
-                @"delete from dag where tijd_van >= '2020/1/28';
-                update ping set rit_id = null, locatie_id = null, verwerkt = 0 where tijd >= '2020/1/28';
-                delete from rit where tijd_van >= '2020/1/28';"
-                );
-                */  
             // TODO: Lock
             var pings = await pingRepository.GetUnprocessed();
-            Ping previousPing = null;
+            Ping previousPing = await pingRepository.GetLastPing(true);
             
             List<Ping> ridePings = new List<Ping>();
             List<Ping> locationPings = new List<Ping>();
@@ -117,7 +109,9 @@ namespace Locatie.Jobs
             // Mark all as done
             if (pings.Count > 0)
             {
-                var remainingPings = (await pingRepository.GetBetweenDates(pings[0].Time, pings[pings.Count - 1].Time))
+                var lastPing = await pingRepository.GetLastPing(true);
+
+                var remainingPings = (await pingRepository.GetBetweenDates(pings[0].Time, lastPing.Time))
                     .Where(p => p.Processed == 0);
                 foreach (var ping in remainingPings)
                 {
