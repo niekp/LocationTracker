@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
+using Locatie.Data;
 using Locatie.Models;
 using Locatie.Repositories.Core;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Locatie.Jobs
 {
@@ -14,12 +18,14 @@ namespace Locatie.Jobs
         private readonly IDayRepository dayRepository;
         private readonly IRideRepository rideRepository;
         private readonly Utils.Utility utility;
+        private readonly LocatieContext locatieContext;
 
         public ProcessPings(
             IPingRepository pingRepository,
             ILocationRepository locationRepository,
             IRideRepository rideRepository,
-            IDayRepository dayRepository
+            IDayRepository dayRepository,
+            LocatieContext locatieContext
         )
         {
             this.pingRepository = pingRepository;
@@ -27,10 +33,19 @@ namespace Locatie.Jobs
             this.rideRepository = rideRepository;
             this.dayRepository = dayRepository;
             utility = new Utils.Utility();
+            this.locatieContext = locatieContext;
         }
 
         public async Task Process()
         {
+            // TODO: Temp test stuff
+            /*
+            locatieContext.Database.ExecuteSqlCommand(
+                @"delete from dag where tijd_van >= '2020/1/28';
+                update ping set rit_id = null, locatie_id = null, verwerkt = 0 where tijd >= '2020/1/28';
+                delete from rit where tijd_van >= '2020/1/28';"
+                );
+                */
             // TODO: Lock
             var pings = await pingRepository.GetUnprocessed();
             Ping previousPing = null;
@@ -77,9 +92,16 @@ namespace Locatie.Jobs
                         // Reset the location list because if i'm standing at a trafic light don't create a location.
                         locationPings = new List<Ping>();
                     }
+                    // If there is a ridePing stuck while at a valid location delete it so speed the process up
+                    else if (ridePings.Count > 0 && await IsValidLocation(locationPings))
+                    {
+                        ridePings = new List<Ping>();
+                    }
 
                     locationPings.Add(ping);
                 }
+
+                previousPing = ping;
             }
 
             // Save the last batch

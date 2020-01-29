@@ -48,6 +48,7 @@ namespace Locatie.Controllers
             {
                 _to = DateTime.Now.Date;
             }
+            _to = _to.AddHours(23.99);
 
             ViewBag.From = _from;
             ViewBag.To = _to;

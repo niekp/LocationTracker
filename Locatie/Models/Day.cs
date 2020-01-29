@@ -31,7 +31,7 @@ namespace Locatie.Models
         public string GetTimeDisplay()
         {
             if (TimeFrom.Date == DateTime.Now.Date)
-                return TimeFrom.Date.ToString("HH:mm");
+                return TimeFrom.ToString("HH:mm");
             if (TimeFrom.Year != DateTime.Now.Year)
                 return TimeTo.ToString("dd-MM-yyyy HH:mm");
             else
