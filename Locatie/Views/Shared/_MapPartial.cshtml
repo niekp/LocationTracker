@@ -21,7 +21,7 @@
     @foreach (var ride in Model.Rides)
     {
         <ride data-id="@ride.Id">
-            @foreach (var ping in ride.Pings)
+            @foreach (var ping in ride.Pings.OrderBy(p => p.Time))
             {
                 <coord data-lat="@ping.Latitude" data-long="@ping.Longitude"></coord>
             }

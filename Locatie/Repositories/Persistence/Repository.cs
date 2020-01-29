@@ -29,7 +29,7 @@ namespace Locatie.Repositories.Persistence
             return dbSet.FindAsync(id);
         }
 
-        public void Insert(T obj)
+        public virtual void Insert(T obj)
         {
             dbSet.Add(obj);
         }

@@ -36,6 +36,12 @@ namespace Locatie.Repositories.Persistence
             return locationDistances.OrderBy(l => l.Value).ToDictionary(x => x.Key, x => x.Value);
         }
 
+        public override void Insert(Location obj)
+        {
+            _locations = null;
+            base.Insert(obj);
+        }
+
         // TODO: Use normal caching
         private List<Location> _locations = null;
         public override async Task<IEnumerable<Location>> GetAllASync()

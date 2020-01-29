@@ -7,7 +7,6 @@ using Locatie.Data;
 using Locatie.Models;
 using Locatie.Repositories.Core;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Locatie.Jobs
 {
@@ -45,7 +44,7 @@ namespace Locatie.Jobs
                 update ping set rit_id = null, locatie_id = null, verwerkt = 0 where tijd >= '2020/1/28';
                 delete from rit where tijd_van >= '2020/1/28';"
                 );
-                */
+                */  
             // TODO: Lock
             var pings = await pingRepository.GetUnprocessed();
             Ping previousPing = null;
@@ -113,6 +112,19 @@ namespace Locatie.Jobs
             if (await IsValidRide(ridePings))
             {
                 await SaveRide(ridePings);
+            }
+
+            // Mark all as done
+            if (pings.Count > 0)
+            {
+                var remainingPings = (await pingRepository.GetBetweenDates(pings[0].Time, pings[pings.Count - 1].Time))
+                    .Where(p => p.Processed == 0);
+                foreach (var ping in remainingPings)
+                {
+                    ping.Processed = 1;
+                    pingRepository.Update(ping);
+                }
+                await pingRepository.SaveAsync();
             }
         }
 

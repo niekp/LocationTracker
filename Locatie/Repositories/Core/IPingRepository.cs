@@ -15,6 +15,7 @@ namespace Locatie.Repositories.Core
 
         Task MergeLocation(int fromId, int toId);
 
+        Task<List<Ping>> GetBetweenDates(DateTime from, DateTime to);
         Task DeleteBetweenDates(DateTime from, DateTime to);
     }
 }

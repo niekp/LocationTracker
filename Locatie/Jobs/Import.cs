@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using Locatie.Data;
 using Locatie.Models;
 using Locatie.Repositories.Core;
+using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
 
 namespace Locatie.Jobs
 {
@@ -11,14 +16,23 @@ namespace Locatie.Jobs
     {
         public readonly ILocationRepository locationRepository;
         public readonly IPingRepository pingRepository;
+        public readonly IDayRepository dayRepository;
+        public readonly IRideRepository rideRepository;
+        public readonly LocatieContext locatieContext;
 
         public Import(
             ILocationRepository locationRepository,
-            IPingRepository pingRepository
+            IPingRepository pingRepository,
+            IDayRepository dayRepository,
+            IRideRepository rideRepository,
+            LocatieContext locatieContext
         )
         {
             this.locationRepository = locationRepository;
             this.pingRepository = pingRepository;
+            this.dayRepository = dayRepository;
+            this.rideRepository = rideRepository;
+            this.locatieContext = locatieContext;
         }
 
         public void ImportWaypoints(string file)
@@ -92,6 +106,46 @@ namespace Locatie.Jobs
 
                 await pingRepository.SaveAsync();
             }
+
+            await Reset(resetFrom, DateTime.Now);
+        }
+
+        public async Task Reset(DateTime from, DateTime to)
+        {
+            // Reset based on day
+            var days = await dayRepository.GetDays(from, to);
+            var pings = new List<Ping>();
+
+            foreach (var day in days)
+            {
+                pings = await pingRepository.GetPings(day);
+                await ResetPings(pings);
+
+                if (day.RideId != null)
+                {
+                    var ride = await rideRepository.GetByIdFull((int)day.RideId);
+                    await ResetPings(ride.Pings.ToList());
+
+                    rideRepository.Delete(day.RideId);
+                    await rideRepository.SaveAsync();
+                }
+
+                dayRepository.Delete(day.Id);
+            }
+
+            await dayRepository.SaveAsync();
+
+            // Reset the remaining pings
+            pings = await pingRepository.GetBetweenDates(from, to);
+            await ResetPings(pings);
+        }
+
+        private async Task ResetPings(List<Ping> pings)
+        {
+            await locatieContext.Database.ExecuteSqlCommandAsync(
+                "UPDATE Ping SET rit_id = null, locatie_id = null, verwerkt = 0 WHERE id IN (@ids)",
+                new MySqlParameter("@ids", string.Join(',', pings.Select(p => p.Id).ToList()))
+            );
         }
 
         private DateTime GetDateFromGpx(string date)

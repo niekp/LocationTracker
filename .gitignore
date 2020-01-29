@@ -1,6 +1,7 @@
 appsettings.Development.json
 appsettings.json
 mono_crash.*
+Hangfire.db
 
 # globs
 Makefile.in

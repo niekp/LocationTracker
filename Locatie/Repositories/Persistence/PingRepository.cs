@@ -15,9 +15,14 @@ namespace Locatie.Repositories.Persistence
         {
         }
 
+        public Task<List<Ping>> GetBetweenDates(DateTime from, DateTime to)
+        {
+            return dbSet.Where(p => p.Time >= from && p.Time <= to).ToListAsync();
+        }
+
         public async Task DeleteBetweenDates(DateTime from, DateTime to)
         {
-            var pings = await dbSet.Where(p => p.Time >= from && p.Time <= to).ToListAsync();
+            var pings = await GetBetweenDates(from, to);
             foreach (var ping in pings)
             {
                 Delete(ping.Id);
