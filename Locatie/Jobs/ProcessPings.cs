@@ -17,14 +17,12 @@ namespace Locatie.Jobs
         private readonly IDayRepository dayRepository;
         private readonly IRideRepository rideRepository;
         private readonly Utils.Utility utility;
-        private readonly LocatieContext locatieContext;
 
         public ProcessPings(
             IPingRepository pingRepository,
             ILocationRepository locationRepository,
             IRideRepository rideRepository,
-            IDayRepository dayRepository,
-            LocatieContext locatieContext
+            IDayRepository dayRepository
         )
         {
             this.pingRepository = pingRepository;
@@ -32,7 +30,6 @@ namespace Locatie.Jobs
             this.rideRepository = rideRepository;
             this.dayRepository = dayRepository;
             utility = new Utils.Utility();
-            this.locatieContext = locatieContext;
         }
 
         public async Task Process()
