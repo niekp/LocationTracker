@@ -148,6 +148,11 @@ namespace Locatie.Jobs
 
         private async Task ResetPings(List<Ping> pings)
         {
+            if (pings.Count == 0)
+            {
+                return;
+            }
+
             var timeoutOld = locatieContext.Database.GetCommandTimeout();
             locatieContext.Database.SetCommandTimeout(86400);
             var fromTime = pings.OrderBy(p => p.Time).FirstOrDefault().Time;

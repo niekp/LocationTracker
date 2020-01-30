@@ -50,18 +50,15 @@ namespace Locatie.Repositories.Persistence
                 .FirstOrDefaultAsync();
         }
 
-        public Task<List<Ping>> GetLastPings(bool onlyProcessed = false, int amount = 1)
+        public async Task<List<Ping>> GetLastPings(bool onlyProcessed = false, int amount = 1)
         {
-            return cache.GetOrCreate(string.Format("PingRepository_GetLastPings_{0}_{1}", onlyProcessed, amount), async cache_item => {
-                cache_item.SetOptions(cache.GetCacheOption());
-                return await dbSet
+            return await dbSet
                 .Where(p => !onlyProcessed || p.Processed == 1)
                 .OrderByDescending(p => p.Time)
                 .Include(p => p.Ride)
                 .Include(p => p.Location)
                 .Take(amount)
                 .ToListAsync();
-            });
         }
 
         public Task<List<Ping>> GetPings(Day day)
