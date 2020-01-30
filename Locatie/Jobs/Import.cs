@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using Hangfire;
 using Locatie.Data;
 using Locatie.Models;
 using Locatie.Repositories.Core;
@@ -39,6 +40,7 @@ namespace Locatie.Jobs
             this.cache = cache;
         }
 
+        [DisableConcurrentExecution(timeoutInSeconds: 60 * 5)]
         public void ImportWaypoints(string file)
         {
             XmlDocument gpxDoc = new XmlDocument();
@@ -68,6 +70,7 @@ namespace Locatie.Jobs
             cache.ClearCache();
         }
 
+        [DisableConcurrentExecution(timeoutInSeconds: 60 * 5)]
         public async Task ImportTrack(string file)
         {
             XmlDocument gpxDoc = new XmlDocument();
@@ -113,6 +116,8 @@ namespace Locatie.Jobs
             }
             cache.ClearCache();
             await Reset(resetFrom, DateTime.Now);
+
+            BackgroundJob.Enqueue<ProcessPings>(x => x.Process());
         }
 
         public async Task Reset(DateTime from, DateTime to)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire;
 using Locatie.Data;
 using Locatie.Models;
 using Locatie.Repositories.Core;
@@ -36,9 +37,9 @@ namespace Locatie.Jobs
             this.cache = cache;
         }
 
+        [DisableConcurrentExecution(timeoutInSeconds: 60 * 30)]
         public async Task Process()
         {
-            // TODO: Lock
             var pings = await pingRepository.GetUnprocessed();
             Ping previousPing = await pingRepository.GetLastPing(true);
             
@@ -276,7 +277,7 @@ namespace Locatie.Jobs
             cache.ClearCache();
         }
 
-        public async Task SaveRidePings(List<Ping> pings)
+        private async Task SaveRidePings(List<Ping> pings)
         {
             var ride = await GetCurrentRide();
             

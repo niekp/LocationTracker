@@ -6,6 +6,7 @@ using Hangfire;
 using Hangfire.SqlServer;
 using Hangfire.Storage.SQLite;
 using Locatie.Data;
+using Locatie.Jobs;
 using Locatie.Repositories.Core;
 using Locatie.Repositories.Persistence;
 using Locatie.Utils;
@@ -102,12 +103,17 @@ namespace Locatie
                 }
             });
 
-            app.UseHangfireDashboard();
-
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new HangfireAuthorization() }
+            });
+
+            RecurringJob.AddOrUpdate<ProcessPings>(x => x.Process(), Cron.Minutely);
 
             app.UseEndpoints(endpoints =>
             {
