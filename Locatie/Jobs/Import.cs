@@ -7,6 +7,7 @@ using System.Xml;
 using Locatie.Data;
 using Locatie.Models;
 using Locatie.Repositories.Core;
+using Locatie.Utils;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 
@@ -19,13 +20,15 @@ namespace Locatie.Jobs
         public readonly IDayRepository dayRepository;
         public readonly IRideRepository rideRepository;
         public readonly LocatieContext locatieContext;
+        public readonly ICache cache;
 
         public Import(
             ILocationRepository locationRepository,
             IPingRepository pingRepository,
             IDayRepository dayRepository,
             IRideRepository rideRepository,
-            LocatieContext locatieContext
+            LocatieContext locatieContext,
+            ICache cache
         )
         {
             this.locationRepository = locationRepository;
@@ -33,6 +36,7 @@ namespace Locatie.Jobs
             this.dayRepository = dayRepository;
             this.rideRepository = rideRepository;
             this.locatieContext = locatieContext;
+            this.cache = cache;
         }
 
         public void ImportWaypoints(string file)
@@ -61,6 +65,7 @@ namespace Locatie.Jobs
             }
 
             locationRepository.SaveAsync();
+            cache.ClearCache();
         }
 
         public async Task ImportTrack(string file)
@@ -106,7 +111,7 @@ namespace Locatie.Jobs
 
                 await pingRepository.SaveAsync();
             }
-
+            cache.ClearCache();
             await Reset(resetFrom, DateTime.Now);
         }
 
@@ -138,6 +143,7 @@ namespace Locatie.Jobs
             // Reset the remaining pings
             pings = await pingRepository.GetBetweenDates(from, to);
             await ResetPings(pings);
+            cache.ClearCache();
         }
 
         private async Task ResetPings(List<Ping> pings)

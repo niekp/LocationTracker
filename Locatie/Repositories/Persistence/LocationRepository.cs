@@ -5,52 +5,66 @@ using System.Threading.Tasks;
 using Locatie.Data;
 using Locatie.Models;
 using Locatie.Repositories.Core;
+using Locatie.Utils;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Locatie.Repositories.Persistence
 {
     public class LocationRepository : Repository<Location>, ILocationRepository
     {
+        private readonly ICache cache;
+        private readonly Utility utility;
+
         public LocationRepository(
-            LocatieContext locatieContext
+            LocatieContext locatieContext,
+            ICache cache
         ) : base(locatieContext)
         {
+            this.cache = cache;
+            utility = new Utility();
         }
 
-        // TODO: Round down and cache
         public async Task<Dictionary<Location, double>> GetByCoordinates(double latitude, double longitude)
         {
-            var utility = new Utils.Utility();
+            // Cache rounded down to 4 characters. This creates a max of 10m deviation so good enough.
+            return await cache.GetOrCreate(
+                string.Format(
+                    "LocationRepository_GetByCoordinates_{0}_{1}",
+                    Math.Round(latitude, 4),
+                    Math.Round(latitude, 4)
+                ),
+            async cache_item => {
+                cache_item.SetOptions(cache.GetCacheOption());
+                var locations = await GetAllASync();
+                Dictionary<Location, double> locationDistances = new Dictionary<Location, double>();
 
-            var locations = await GetAllASync();
-            Dictionary<Location, double> locationDistances = new Dictionary<Location, double>();
-            foreach(var location in locations)
-            {
-                var distance = utility.GetDistanceInMeters(location.Latitude, location.Longitude, latitude, longitude);
-                if (distance <= Utils.Constants.KNOWN_LOCATION_RADIUS)
+                foreach (var location in locations)
                 {
-                    locationDistances.Add(location, distance);
+                    var distance = utility.GetDistanceInMeters(location.Latitude, location.Longitude, latitude, longitude);
+                    if (distance <= Constants.KNOWN_LOCATION_RADIUS)
+                    {
+                        locationDistances.Add(location, distance);
+                    }
                 }
-            }
 
-            return locationDistances.OrderBy(l => l.Value).ToDictionary(x => x.Key, x => x.Value);
+                return locationDistances.OrderBy(l => l.Value).ToDictionary(x => x.Key, x => x.Value);
+            });
         }
 
         public override void Insert(Location obj)
         {
-            _locations = null;
+            cache.Remove("LocationRepository_GetAllAsync");
             base.Insert(obj);
         }
 
-        // TODO: Use normal caching
-        private List<Location> _locations = null;
         public override async Task<IEnumerable<Location>> GetAllASync()
         {
-            if (_locations == null)
+            return await cache.GetOrCreate("LocationRepository_GetAllAsync", cache_item =>
             {
-                _locations = await dbSet.ToListAsync();
-            }
-            return _locations;
+                cache_item.SetOptions(cache.GetCacheOption());
+                return dbSet.ToListAsync();
+            });
         }
 
         public Task<Location> GetByIdWithHistory(int id)

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Locatie.Data;
 using Locatie.Models;
 using Locatie.Repositories.Core;
+using Locatie.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Locatie.Jobs
@@ -16,20 +17,23 @@ namespace Locatie.Jobs
         private readonly ILocationRepository locationRepository;
         private readonly IDayRepository dayRepository;
         private readonly IRideRepository rideRepository;
-        private readonly Utils.Utility utility;
+        private readonly Utility utility;
+        private readonly ICache cache;
 
         public ProcessPings(
             IPingRepository pingRepository,
             ILocationRepository locationRepository,
             IRideRepository rideRepository,
-            IDayRepository dayRepository
+            IDayRepository dayRepository,
+            ICache cache
         )
         {
             this.pingRepository = pingRepository;
             this.locationRepository = locationRepository;
             this.rideRepository = rideRepository;
             this.dayRepository = dayRepository;
-            utility = new Utils.Utility();
+            utility = new Utility();
+            this.cache = cache;
         }
 
         public async Task Process()
@@ -73,7 +77,7 @@ namespace Locatie.Jobs
                 {
                     if (await IsValidRide(ridePings))
                     {
-                        await SaveRide(ridePings);
+                        await SaveRidePings(ridePings);
                         // Reset the location list. These functions can append pings 1 at a time if needed
                         ridePings = new List<Ping>();
 
@@ -100,7 +104,7 @@ namespace Locatie.Jobs
 
             if (await IsValidRide(ridePings))
             {
-                await SaveRide(ridePings);
+                await SaveRidePings(ridePings);
             }
 
             // Mark all as done
@@ -269,9 +273,10 @@ namespace Locatie.Jobs
             }
 
             await pingRepository.SaveAsync();
+            cache.ClearCache();
         }
 
-        public async Task SaveRide(List<Ping> pings)
+        public async Task SaveRidePings(List<Ping> pings)
         {
             var ride = await GetCurrentRide();
             
@@ -322,6 +327,7 @@ namespace Locatie.Jobs
             }
 
             await pingRepository.SaveAsync();
+            cache.ClearCache();
         }
     }
 }

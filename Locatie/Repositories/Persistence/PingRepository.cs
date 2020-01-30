@@ -5,14 +5,22 @@ using System.Threading.Tasks;
 using Locatie.Data;
 using Locatie.Models;
 using Locatie.Repositories.Core;
+using Locatie.Utils;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Locatie.Repositories.Persistence
 {
     public class PingRepository : Repository<Ping>, IPingRepository
     {
-        public PingRepository(LocatieContext locatieContext) : base(locatieContext)
+        private readonly ICache cache;
+
+        public PingRepository(
+            LocatieContext locatieContext,
+            ICache cache
+        ) : base(locatieContext)
         {
+            this.cache = cache;
         }
 
         public Task<List<Ping>> GetBetweenDates(DateTime from, DateTime to)
@@ -44,25 +52,37 @@ namespace Locatie.Repositories.Persistence
 
         public Task<List<Ping>> GetLastPings(bool onlyProcessed = false, int amount = 1)
         {
-            return dbSet
+            return cache.GetOrCreate(string.Format("PingRepository_GetLastPings_{0}_{1}", onlyProcessed, amount), async cache_item => {
+                cache_item.SetOptions(cache.GetCacheOption());
+                return await dbSet
                 .Where(p => !onlyProcessed || p.Processed == 1)
                 .OrderByDescending(p => p.Time)
                 .Include(p => p.Ride)
                 .Include(p => p.Location)
                 .Take(amount)
                 .ToListAsync();
+            });
         }
 
-        public async Task<List<Ping>> GetPings(Day day)
+        public Task<List<Ping>> GetPings(Day day)
         {
-            await db.Entry(day).Collection(x => x.Pings).LoadAsync();
-            return day.Pings.ToList();
+            return cache.GetOrCreate(string.Format("PingRepository_GetPings_d_{0}", day.Id), async cache_item =>
+            {
+                cache_item.SetOptions(cache.GetCacheOption());
+                await db.Entry(day).Collection(x => x.Pings).LoadAsync();
+                return day.Pings.ToList();
+            });
         }
 
-        public async Task<List<Ping>> GetPings(Ride ride)
+        public Task<List<Ping>> GetPings(Ride ride)
         {
-            await db.Entry(ride).Collection(x => x.Pings).LoadAsync();
-            return ride.Pings.ToList();
+            return cache.GetOrCreate(string.Format("PingRepository_GetPings_r_{0}", ride.Id), async cache_item =>
+            {
+                cache_item.SetOptions(cache.GetCacheOption());
+                await db.Entry(ride).Collection(x => x.Pings).LoadAsync();
+                return ride.Pings.ToList();
+            });
+            
         }
 
         public Task<List<Ping>> GetUnprocessed()

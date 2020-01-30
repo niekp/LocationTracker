@@ -8,6 +8,7 @@ using Hangfire.Storage.SQLite;
 using Locatie.Data;
 using Locatie.Repositories.Core;
 using Locatie.Repositories.Persistence;
+using Locatie.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -40,6 +41,16 @@ namespace Locatie
             services.AddTransient<IDayRepository, DayRepository>();
             services.AddTransient<ITagRepository, TagRepository>();
 
+            // Cache
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+            services.AddTransient<ICache, Cache>();
+
+            // Hangfire
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
@@ -50,7 +61,7 @@ namespace Locatie
             services.AddHangfireServer();
 
             // App settings
-            services.Configure<Utils.AppSettings>(Configuration);
+            services.Configure<AppSettings>(Configuration);
 
             // MVC
             services.AddControllersWithViews();
@@ -71,6 +82,8 @@ namespace Locatie
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseSession();
 
             app.UseHangfireDashboard();
 
