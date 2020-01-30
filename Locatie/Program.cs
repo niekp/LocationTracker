@@ -20,6 +20,7 @@ namespace Locatie
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseUrls(urls: "http://localhost:5003");
                     webBuilder.UseStartup<Startup>();
                 });
     }

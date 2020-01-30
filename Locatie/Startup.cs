@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.SqlServer;
@@ -13,6 +14,7 @@ using Locatie.Utils;
 using Locatie.Utils.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +35,12 @@ namespace Locatie
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.KnownProxies.Add(IPAddress.Parse("127.0.0.1"));
+                options.KnownProxies.Add(IPAddress.Parse("51.68.123.74"));
+            });
+
             // Databases
             services.AddDbContext<LocatieContext>(options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -104,6 +112,11 @@ namespace Locatie
             });
 
             app.UseRouting();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();
