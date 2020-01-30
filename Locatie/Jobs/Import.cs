@@ -148,10 +148,19 @@ namespace Locatie.Jobs
 
         private async Task ResetPings(List<Ping> pings)
         {
+            var timeoutOld = locatieContext.Database.GetCommandTimeout();
+            locatieContext.Database.SetCommandTimeout(86400);
+            var fromTime = pings.OrderBy(p => p.Time).FirstOrDefault().Time;
+
             await locatieContext.Database.ExecuteSqlCommandAsync(
-                "UPDATE Ping SET rit_id = null, locatie_id = null, verwerkt = 0 WHERE id IN (@ids)",
+                "UPDATE ping SET rit_id = null, locatie_id = null, verwerkt = 0 WHERE tijd >= @time AND FIND_IN_SET(id, @ids) != 0",
+                new MySqlParameter("@time", fromTime),
                 new MySqlParameter("@ids", string.Join(',', pings.Select(p => p.Id).ToList()))
             );
+
+            await locatieContext.SaveChangesAsync();
+
+            locatieContext.Database.SetCommandTimeout(timeoutOld);
         }
 
         private DateTime GetDateFromGpx(string date)
