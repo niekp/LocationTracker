@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Locatie.Models;
 using Locatie.Repositories.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Locatie.Controllers
 {
+    [Authorize]
     public class DayController : Controller
     {
         private readonly IDayRepository dayRepository;

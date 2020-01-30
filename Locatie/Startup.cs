@@ -9,6 +9,7 @@ using Locatie.Data;
 using Locatie.Repositories.Core;
 using Locatie.Repositories.Persistence;
 using Locatie.Utils;
+using Locatie.Utils.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -40,6 +41,8 @@ namespace Locatie
             services.AddTransient<IRideRepository, RideRepository>();
             services.AddTransient<IDayRepository, DayRepository>();
             services.AddTransient<ITagRepository, TagRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IUserSessionRepository, UserSessionRepository>();
 
             // Cache
             services.AddSession(options => {
@@ -63,6 +66,12 @@ namespace Locatie
             // App settings
             services.Configure<AppSettings>(Configuration);
 
+            // Authorization
+            services.AddAuthentication(a => {
+                a.DefaultAuthenticateScheme = "Cookie";
+                a.DefaultChallengeScheme = "Cookie";
+            }).AddCookieAuth(o => { });
+
             // MVC
             services.AddControllersWithViews();
         }
@@ -85,10 +94,19 @@ namespace Locatie
 
             app.UseSession();
 
+            app.UseStatusCodePages(async context => {
+                if (context.HttpContext.Response.StatusCode == 401
+                    && !context.HttpContext.Request.Path.Value.StartsWith("/api"))
+                {
+                    context.HttpContext.Response.Redirect("/login");
+                }
+            });
+
             app.UseHangfireDashboard();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

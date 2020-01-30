@@ -7,9 +7,11 @@ using Locatie.Models;
 using Locatie.Repositories.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Locatie.Controllers
 {
+    [Authorize]
     public class LocationController : Controller
     {
         private readonly ILocationRepository locationRepository;

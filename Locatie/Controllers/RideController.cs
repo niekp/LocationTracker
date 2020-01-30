@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Locatie.Models;
 using Locatie.Repositories.Core;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Locatie.Controllers
 {
+    [Authorize]
     public class RideController : Controller
     {
         private readonly IRideRepository rideRepository;

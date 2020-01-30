@@ -16,9 +16,12 @@
     <div class="container-fluid content-container">
 
         <div class="row content">
-            <div class="col-sm-3 sidenav">
-                <partial name="_MenuPartial" />
-            </div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="col-sm-3 sidenav">
+                    <partial name="_MenuPartial" />
+                </div>
+            }
             <div class="col-sm-9">
                 <div class="row">
                     <div class="col-sm-12">

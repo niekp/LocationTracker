@@ -16,7 +16,8 @@ namespace Locatie.Data
         public DbSet<Day> Day { get; set; }
         public DbSet<Tag> Tag { get; set; }
         public DbSet<RideTag> RideTag { get; set; }
-
+        public DbSet<User> User { get; set; }
+        public DbSet<UserSession> UserSession { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

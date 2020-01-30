@@ -6,5 +6,6 @@ namespace Locatie.Utils
         public string HereApiKey { get; set; }
         public string HereAppId { get; set; }
         public string HereAppCode { get; set; }
+        public string Pepper { get; set; }
     }
 }

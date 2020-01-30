@@ -8,5 +8,10 @@ namespace Locatie.Utils
         public const int MINIMUM_SECONDS_KNOWN_LOCATION = (5*60);
         public const int MINIMUM_SECONDS_UNKNOWN_LOCATION = 45;
         public const int MINIMUM_SECONDS_RIDING = 45;
+
+        public const string USER_NAME_CLAIM = System.Security.Claims.ClaimTypes.Email;
+        public const string USER_ID_CLAIM = System.Security.Claims.ClaimTypes.Sid;
+        public const string USER_EMAIL_CLAIM = System.Security.Claims.ClaimTypes.Email;
+
     }
 }

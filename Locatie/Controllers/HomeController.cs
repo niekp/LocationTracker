@@ -9,9 +9,11 @@ using Locatie.Models;
 using Locatie.Repositories.Core;
 using System.Globalization;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Locatie.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
