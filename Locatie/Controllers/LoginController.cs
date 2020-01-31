@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using System;
 
 namespace Locatie.Controllers {
 	[AllowAnonymous]
@@ -40,7 +41,10 @@ namespace Locatie.Controllers {
 				return View(_user);
 			}
 
-			HttpContext.Response.Cookies.Append("User", string.Format("IdUser={0}&Code={1}", user.Id, session.Token));
+			HttpContext.Response.Cookies.Append("User", string.Format("IdUser={0}&Code={1}", user.Id, session.Token), new Microsoft.AspNetCore.Http.CookieOptions
+			{
+				Expires = DateTimeOffset.Now.AddMonths(1)
+			});
 
 			return RedirectToAction("Index", "Home");
 		}
