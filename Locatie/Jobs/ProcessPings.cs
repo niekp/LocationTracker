@@ -122,6 +122,8 @@ namespace Locatie.Jobs
                 }
                 await pingRepository.SaveAsync();
             }
+
+            RecurringJob.AddOrUpdate<ProcessPings>("ProcessPings", x => x.Process(), Cron.Minutely);
         }
 
         private async Task<bool> IsValidLocation(List<Ping> pings)

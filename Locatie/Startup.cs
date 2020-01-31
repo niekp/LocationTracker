@@ -126,7 +126,7 @@ namespace Locatie
                 Authorization = new[] { new HangfireAuthorization() }
             });
 
-            RecurringJob.AddOrUpdate<ProcessPings>(x => x.Process(), Cron.Minutely);
+            RecurringJob.AddOrUpdate<ProcessPings>("ProcessPings", x => x.Process(), Cron.Minutely);
 
             app.UseEndpoints(endpoints =>
             {

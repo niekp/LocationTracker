@@ -73,6 +73,8 @@ namespace Locatie.Jobs
         [DisableConcurrentExecution(timeoutInSeconds: 60 * 5)]
         public async Task ImportTrack(string file)
         {
+            RecurringJob.RemoveIfExists("ProcessPings");
+
             XmlDocument gpxDoc = new XmlDocument();
             gpxDoc.Load(file);
 
