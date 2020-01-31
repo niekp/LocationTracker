@@ -1,5 +1,5 @@
 ﻿<h4>Locatie</h4>
-<ul class="nav nav-pills flex-column pb-5">
+<ul class="nav nav-pills flex-column">
     <li class="nav-item">
         <a class="nav-link active" href="@Url.Action("Index", "Home")">Tijdlijn</a>
     </li>
@@ -10,8 +10,6 @@
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
-            <li class="nav-item"><a class="dropdown-item" href="{{ url('stats_periode') }}">Periode</a></li>
-            <li class="nav-item"><a class="dropdown-item" href="{{ url('stats_locaties') }}">Locaties</a></li>
             <li class="nav-item"><a class="dropdown-item" href="{{ url('stats_jaar') }}">Jaar</a></li>
         </ul>
     </li>
@@ -22,10 +20,8 @@
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
-            <li class="nav-item"><a class="dropdown-item" href="{{ url('settings') }}">Instellingen</a></li>
-            <li class="nav-item"><a class="dropdown-item" href="{{ url('user') }}">Gebruikers</a></li>
             <li class="nav-item"><a class="dropdown-item" href="@Url.Action("Index", "Location")">Locaties</a></li>
-            <li class="nav-item"><a class="dropdown-item" href="{{ url('tags') }}">Tags</a></li>
+            <li class="nav-item"><a class="dropdown-item" href="@Url.Action("Index", "Tag")">Tags</a></li>
             <li class="nav-item"><a class="dropdown-item" href="@Url.Action("Index", "Import")">Importeer GPX</a></li>
         </ul>
     </li>
