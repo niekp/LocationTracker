@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
-using Locatie.Data;
 using Locatie.Models;
 using Locatie.Repositories.Core;
 using Locatie.Utils;
-using Microsoft.EntityFrameworkCore;
 
 namespace Locatie.Jobs
 {
@@ -58,7 +55,7 @@ namespace Locatie.Jobs
                 var kmh = utility.GetSpeed(previousPing.Time, ping.Time, distance);
 
                 // Moving
-                if (kmh >= Utils.Constants.MINIMUM_MOVING_SPEED)
+                if (kmh >= Constants.MINIMUM_MOVING_SPEED)
                 {
                     // Finish the locationPings before starting to move.
                     if (await IsValidLocation(locationPings))
@@ -144,8 +141,8 @@ namespace Locatie.Jobs
             var knownLocation = locations.Any();
 
             // Check the time at the current location against the margins.
-            if (seconds >= Utils.Constants.MINIMUM_SECONDS_UNKNOWN_LOCATION
-                || (knownLocation && seconds > Utils.Constants.MINIMUM_SECONDS_KNOWN_LOCATION)
+            if (seconds >= Constants.MINIMUM_SECONDS_UNKNOWN_LOCATION
+                || (knownLocation && seconds > Constants.MINIMUM_SECONDS_KNOWN_LOCATION)
             )
             {
                 return true;
@@ -184,7 +181,7 @@ namespace Locatie.Jobs
 
             // Minimum time, distance, speed check
             if (
-                GetTotalSeconds(pings) < Utils.Constants.MINIMUM_SECONDS_RIDING
+                GetTotalSeconds(pings) < Constants.MINIMUM_SECONDS_RIDING
                 || distance < 100
                 || utility.GetSpeed(pings[0].Time, pings[pings.Count - 1].Time, distance) < 1
             )
