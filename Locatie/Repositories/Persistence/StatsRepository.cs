@@ -105,6 +105,11 @@ namespace Locatie.Repositories.Persistence
                     cache_entry.SetOptions(cache.GetCacheOption(Minuten: 365*24*60));
                 }
 
+                if (to > DateTime.Now)
+                {
+                    to = DateTime.Now;
+                }
+
                 var stats = new Stats
                 {
                     TotalHours = (to - from).TotalHours
