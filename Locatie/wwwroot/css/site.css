@@ -98,3 +98,7 @@ body {
 .yearly-stats .summary {
     border: 3px solid #a4d1ff
 }
+
+.yearly-stats td, .yearly-stats th {
+    padding: 2px;
+}
