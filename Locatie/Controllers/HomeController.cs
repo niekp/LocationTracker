@@ -44,10 +44,10 @@ namespace Locatie.Controllers
             return View(days);
         }
 
-        public string Process()
+        public IActionResult Process()
         {
             BackgroundJob.Enqueue<Jobs.ProcessPings>(x => x.Process());
-            return "ok";
+            return RedirectToAction("Index");
         }
 
         public IActionResult Privacy()

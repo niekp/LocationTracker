@@ -94,3 +94,7 @@ body {
 .content-container {
     padding-bottom: 20px;
 }
+
+.yearly-stats .summary {
+    border: 3px solid #a4d1ff
+}

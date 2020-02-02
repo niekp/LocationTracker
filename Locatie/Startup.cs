@@ -53,6 +53,9 @@ namespace Locatie
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserSessionRepository, UserSessionRepository>();
 
+            // Helper repos
+            services.AddTransient<IStatsRepository, StatsRepository>();
+
             // Cache
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -126,7 +129,7 @@ namespace Locatie
                 Authorization = new[] { new HangfireAuthorization() }
             });
 
-            RecurringJob.AddOrUpdate<ProcessPings>("ProcessPings", x => x.Process(), Cron.Minutely);
+            RecurringJob.AddOrUpdate<ProcessPings>("ProcessPings", x => x.Process(), Cron.Daily);
 
             app.UseEndpoints(endpoints =>
             {

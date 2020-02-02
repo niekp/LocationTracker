@@ -8,6 +8,7 @@ using Locatie.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -46,5 +47,31 @@ namespace Locatie.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult Reset()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Reset(string date)
+        {
+            if (string.IsNullOrEmpty(date) ||
+                !(DateTime.TryParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime _date)))
+            {
+                _date = DateTime.Now.Date;
+            }
+
+            BackgroundJob.Enqueue<Jobs.Import>(x => x.Reset(_date, DateTime.Now));
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult DisableProcessing()
+        {
+            RecurringJob.RemoveIfExists("ProcessPings");
+            return RedirectToAction("Index", "Home");
+        }
+        
     }
 }

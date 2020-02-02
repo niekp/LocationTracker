@@ -33,6 +33,7 @@
     <Folder Include="Views\Tag\" />
     <Folder Include="Views\Import\" />
     <Folder Include="Jobs\" />
+    <Folder Include="Views\Stats\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="mono_crash.8682cc0d8.0.json" />

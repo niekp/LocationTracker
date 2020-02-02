@@ -123,7 +123,7 @@ namespace Locatie.Jobs
                 await pingRepository.SaveAsync();
             }
 
-            RecurringJob.AddOrUpdate<ProcessPings>("ProcessPings", x => x.Process(), Cron.Minutely);
+            // RecurringJob.AddOrUpdate<ProcessPings>("ProcessPings", x => x.Process(), Cron.Minutely);
         }
 
         private async Task<bool> IsValidLocation(List<Ping> pings)
@@ -331,6 +331,12 @@ namespace Locatie.Jobs
 
             await pingRepository.SaveAsync();
             cache.ClearCache();
+
+            // Save the ride distance to speed up some statistics
+            ride = await rideRepository.GetByIdFull(ride.Id);
+            ride.ResetDistance();
+            rideRepository.Update(ride);
+            await rideRepository.SaveAsync();
         }
     }
 }

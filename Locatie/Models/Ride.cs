@@ -38,6 +38,15 @@ namespace Locatie.Models
             return _distance ?? 0;
         }
 
+        public void ResetDistance()
+        {
+            _distance = null;
+            if (Pings != null)
+            {
+                DistanceInMeters = Convert.ToInt16(Math.Round(GetDistanceInMeters()));
+            }
+        }
+
         public double GetDistanceInKilometers()
         {
             return Math.Round(GetDistanceInMeters() / 1000, 2);
