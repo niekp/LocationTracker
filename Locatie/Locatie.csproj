@@ -34,6 +34,7 @@
     <Folder Include="Views\Import\" />
     <Folder Include="Jobs\" />
     <Folder Include="Views\Stats\" />
+    <Folder Include="Views\Running\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="mono_crash.8682cc0d8.0.json" />

@@ -9,5 +9,6 @@ namespace Locatie.Repositories.Core
     {
         public Task<Ride> GetByIdFull(int id);
         public Task SetTags(int rideId, string tags);
+        public Task<List<Ride>> GetByTag(Tag Tag);
     }
 }

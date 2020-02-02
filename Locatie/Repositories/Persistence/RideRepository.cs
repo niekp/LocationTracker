@@ -5,19 +5,24 @@ using System.Threading.Tasks;
 using Locatie.Data;
 using Locatie.Models;
 using Locatie.Repositories.Core;
+using Locatie.Utils;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Locatie.Repositories.Persistence
 {
     public class RideRepository : Repository<Ride>, IRideRepository
     {
+        private readonly ICache cache;
         private readonly ITagRepository tagRepository;
 
         public RideRepository(
             LocatieContext locatieContext,
+            ICache cache,
             ITagRepository tagRepository
         ) : base(locatieContext)
         {
+            this.cache = cache;
             this.tagRepository = tagRepository;
         }
 
@@ -29,6 +34,21 @@ namespace Locatie.Repositories.Persistence
                 .Include(r => r.Day)
                 .Include("Tags.Tag")
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Ride>> GetByTag(Tag tag)
+        {
+            return await cache.GetOrCreate(string.Format("RideRepository_GetByTag_{0}", tag.Id), cache_item =>
+            {
+                cache_item.SetOptions(cache.GetCacheOption());
+
+                return (from r in db.Ride
+                        join rt in db.RideTag on r.Id equals rt.RideId
+                        where rt.TagId == tag.Id
+                        select r)
+                        .Include(r => r.Pings)
+                        .ToListAsync();
+            });
         }
 
         public async Task SetTags(int rideId, string tags)

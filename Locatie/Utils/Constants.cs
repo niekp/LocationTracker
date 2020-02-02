@@ -13,5 +13,6 @@ namespace Locatie.Utils
         public const string USER_ID_CLAIM = System.Security.Claims.ClaimTypes.Sid;
         public const string USER_EMAIL_CLAIM = System.Security.Claims.ClaimTypes.Email;
 
+        public const string RUNNING_TAG = "Hardlopen";
     }
 }

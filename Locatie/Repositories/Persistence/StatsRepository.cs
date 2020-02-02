@@ -120,7 +120,7 @@ namespace Locatie.Repositories.Persistence
                 stats.All.Meters = meters;
 
                 // Walking & running
-                var runningTag = await tagRepository.GetOrCreate("Hardlopen");
+                var runningTag = await tagRepository.GetOrCreate(Constants.RUNNING_TAG);
                 (minutes, meters) = await GetMinutesMovingAsync(from, to, 6.0, 25.0, new List<Tag>() { runningTag });
                 stats.Walking.Minutes = minutes;
                 stats.Walking.Meters = meters;

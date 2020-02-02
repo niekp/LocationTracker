@@ -1,0 +1,36 @@
+﻿@model List<Run>
+@{
+    ViewData["Title"] = "Hardlopen";
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr><th>Datum</th><th>Km</th><th>Tijd</th><th>Km/u</th><th>Tempo</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var run in Model)
+        {
+        <tr>
+            <td>@run.TimeFrom.ToString("dd-MM-yyyy HH:mm") - @run.TimeTo.ToString("HH:mm")</td>
+            <td>@Math.Round(run.DistanceInMeters / 1000.0, 2).ToString("F2")</td>
+            <td>
+                @TimeSpan.FromMinutes(run.MinutesMoving).ToString("mm':'ss") actief
+                @{
+                    TimeSpan rest = TimeSpan.FromMinutes(run.TotalMinutes - run.MinutesMoving);
+                    if (rest.TotalSeconds > 0)
+                    {
+                        <br /><span>@TimeSpan.FromMinutes(run.TotalMinutes - run.MinutesMoving).ToString("mm':'ss") rust</span>
+                    }
+                }
+            </td>
+            <td>
+                @(Math.Round((run.DistanceInMeters / 1000.0) / (run.MinutesMoving / 60.0), 2)) km/u
+            </td>
+            <td>
+                @(TimeSpan.FromMinutes(run.MinutesMoving / (run.DistanceInMeters / 1000.0)).ToString("mm':'ss"))
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+

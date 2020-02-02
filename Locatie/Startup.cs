@@ -55,6 +55,7 @@ namespace Locatie
 
             // Helper repos
             services.AddTransient<IStatsRepository, StatsRepository>();
+            services.AddTransient<IRunRepository, RunRepository>();
 
             // Cache
             services.AddSession(options => {
