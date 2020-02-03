@@ -63,5 +63,14 @@ namespace Locatie.Repositories.Persistence
 
             return runs.OrderByDescending(r => r.TimeFrom).ToList();
         }
+
+        public async Task<Run> GetRun(DateTime date)
+        {
+            var tag = await tagRepository.GetOrCreate(Constants.RUNNING_TAG);
+            var rides = (await rideRepository.GetByTag(tag)).Where(r => r.TimeFrom.Date == date);
+            var run = GetRunFromRides(rides.ToList());
+
+            return run;
+        }
     }
 }

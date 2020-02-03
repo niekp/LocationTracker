@@ -1,0 +1,24 @@
+﻿@model Run
+@{
+    ViewData["Title"] = "Hardlopen";
+}
+
+@{
+    var rides = Model.Laps.ToList();
+    if (rides.Count > 0)
+    {
+        <partial name="_MapPartial" model="new MapData { Rides = rides }" />
+        <div style="clear:both;"><br /></div>
+    }
+}
+
+<table class="table">
+    <thead>
+        <tr><th>Datum</th><th>Km</th><th>Tijd</th><th>Km/u</th><th>Tempo</th></tr>
+    </thead>
+    <tbody>
+        <partial name="RunTablerow" model="Model" />
+    </tbody>
+</table>
+
+@Html.ActionLink("Terug", "Index", "Running", null, new { @class = "btn btn-primary" })

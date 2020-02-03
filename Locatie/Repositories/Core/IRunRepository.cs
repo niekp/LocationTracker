@@ -7,6 +7,7 @@ namespace Locatie.Repositories.Core
 {
     public interface IRunRepository
     {
+        Task<Run> GetRun(DateTime date);
         Task<List<Run>> GetRuns();
     }
 }

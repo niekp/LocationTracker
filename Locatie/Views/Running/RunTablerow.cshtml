@@ -1,0 +1,32 @@
+﻿@model Run
+
+@{
+    string onclick = "";
+    if (ViewData["LinkRun"] is bool && (bool)ViewData["LinkRun"] == true)
+    {
+        onclick = String.Concat(
+            "window.location.href='",
+            Url.ActionLink("Run", "Running", new { date = Model.TimeFrom.Date.ToString("dd-MM-yyyy") }),
+            "';");
+    }
+}
+<tr onclick="@onclick">
+    <td>@Model.TimeFrom.ToString("dd-MM-yyyy HH:mm") - @Model.TimeTo.ToString("HH:mm")</td>
+    <td>@Math.Round(Model.DistanceInMeters / 1000.0, 2).ToString("F2")</td>
+    <td>
+        @TimeSpan.FromMinutes(Model.MinutesMoving).ToString("mm':'ss") actief
+        @{
+            TimeSpan rest = TimeSpan.FromMinutes(Model.TotalMinutes - Model.MinutesMoving);
+            if (rest.TotalSeconds > 0)
+            {
+                <br /><span>@TimeSpan.FromMinutes(Model.TotalMinutes - Model.MinutesMoving).ToString("mm':'ss") rust</span>
+            }
+        }
+    </td>
+    <td>
+        @(Math.Round((Model.DistanceInMeters / 1000.0) / (Model.MinutesMoving / 60.0), 2)) km/u
+    </td>
+    <td>
+        @(TimeSpan.FromMinutes(Model.MinutesMoving / (Model.DistanceInMeters / 1000.0)).ToString("mm':'ss"))
+    </td>
+</tr>

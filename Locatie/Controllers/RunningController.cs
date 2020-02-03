@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Locatie.Repositories.Core;
@@ -24,12 +25,23 @@ namespace Locatie.Controllers
             this.tagRepository = tagRepository;
         }
 
-        
-
         public async Task<IActionResult> Index()
         {
             var runs = await runRepository.GetRuns();
             return View(runs);
         }
+
+        public async Task<IActionResult> Run(string date)
+        {
+            if (string.IsNullOrEmpty(date) ||
+                !(DateTime.TryParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime _date)))
+            {
+                return RedirectToAction("Index");
+            }
+
+            var run = await runRepository.GetRun(_date);
+            return View(run);
+        }
+
     }
 }
