@@ -121,7 +121,8 @@ namespace Locatie.Repositories.Persistence
 
                 // Walking & running
                 var runningTag = await tagRepository.GetOrCreate(Constants.RUNNING_TAG);
-                (minutes, meters) = await GetMinutesMovingAsync(from, to, 6.0, 25.0, new List<Tag>() { runningTag });
+                var walkingTag = await tagRepository.GetOrCreate(Constants.WALKING_TAG);
+                (minutes, meters) = await GetMinutesMovingAsync(from, to, 6.0, 25.0, new List<Tag>() { runningTag, walkingTag });
                 stats.Walking.Minutes = minutes;
                 stats.Walking.Meters = meters;
 

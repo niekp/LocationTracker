@@ -14,5 +14,6 @@ namespace Locatie.Utils
         public const string USER_EMAIL_CLAIM = System.Security.Claims.ClaimTypes.Email;
 
         public const string RUNNING_TAG = "Hardlopen";
+        public const string WALKING_TAG = "Wandelen";
     }
 }
