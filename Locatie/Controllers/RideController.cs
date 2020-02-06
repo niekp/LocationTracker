@@ -63,5 +63,18 @@ namespace Locatie.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SaveRide(Ride _ride)
+        {
+            var ride = await rideRepository.GetByIdFull(_ride.Id);
+            ride.AccuracyCutoff = _ride.AccuracyCutoff;
+            ride.ResetDistance();
+            rideRepository.Update(ride);
+            await rideRepository.SaveAsync();
+
+            return RedirectToAction("Index", "Ride", new { id = ride.Id });
+        }
+        
+
     }
 }

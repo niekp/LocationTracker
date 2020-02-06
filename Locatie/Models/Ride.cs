@@ -24,6 +24,14 @@ namespace Locatie.Models
 
         public ICollection<Ping> Pings { get; set; }
 
+        [Column("accuracy_cutoff")]
+        public int? AccuracyCutoff { get; set; }
+
+        public List<Ping> GetPings()
+        {
+            return Pings.Where(p => p.Accuracy < (AccuracyCutoff ?? 100)).OrderBy(p => p.Time).ToList();
+        }
+
         public Day Day { get; set; }
 
         private double? _distance = null;
@@ -32,7 +40,7 @@ namespace Locatie.Models
             if (_distance == null)
             {
                 var u = new Utils.Utility();
-                _distance = u.GetDistanceInMeters(Pings.OrderBy(p => p.Time).ToList());
+                _distance = u.GetDistanceInMeters(GetPings().OrderBy(p => p.Time).ToList());
             }
 
             return _distance ?? 0;

@@ -28,6 +28,23 @@
     </fieldset>
 }
 
+<h4 class="mt-4">Finetuning</h4>
+@using (Html.BeginForm("SaveRide", "Ride", FormMethod.Post))
+{
+    <fieldset>
+        @Html.HiddenFor(o => o.Id)
+        <div class="form-group row">
+            <label for="accuracy" class="col-sm-2 col-form-label">Nauwkeurigheid</label>
+            <div class="col-sm-10">
+                <input asp-for="AccuracyCutoff" class="form-control" />
+                <small id="accuracyHelp" class="form-text text-muted">Negeer pings met een accuracy boven dit aantal meters.</small>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Opslaan</button>
+    </fieldset>
+}
+
 <h4 class="mt-4">Verwijderen</h4>
 @using (Html.BeginForm("Delete", "Ride", FormMethod.Post))
 {
