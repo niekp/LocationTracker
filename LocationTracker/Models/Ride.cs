@@ -51,7 +51,7 @@ namespace LocationTracker.Models
             _distance = null;
             if (Pings != null)
             {
-                DistanceInMeters = Convert.ToInt16(Math.Round(GetDistanceInMeters()));
+                DistanceInMeters = Convert.ToInt32(Math.Round(GetDistanceInMeters()));
             }
         }
 
