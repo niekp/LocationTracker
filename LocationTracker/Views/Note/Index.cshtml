@@ -1,0 +1,54 @@
+﻿@model List<Note>
+@{
+    ViewData["Title"] = "Notities";
+}
+
+@section Scripts {
+    <script type="text/javascript">
+		function changeDatum() {
+            var url = "@Url.Action("Index", "Note")";
+
+			var start = $("#start").val();
+			var eind = $("#eind").val();
+
+			window.location.href = url += "?from=" + start + "&to=" + eind;
+		}
+    </script>
+}
+
+<div class="row">
+    <div class="col-12 mt-3">
+        <input type="text" name="start" id="start" class="datepicker form-control" value="@ViewBag.From.ToString("dd-MM-yyyy")" style="width: 110px;float: left;margin-right:10px;">
+        <input type="text" name="eind" id="eind" class="datepicker form-control" value="@ViewBag.To.ToString("dd-MM-yyyy")" style="width: 110px;float: left;margin-right:10px;">
+        <input type="button" class="btn btn-primary" value="Go" onclick="changeDatum();">&nbsp;&nbsp;&nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 mt-3">
+        <form method="post" action="/Note/Search">
+            <input type="text" name="search" class="form-control" placeholder="Zoeken.." id="search" value="@ViewBag.Search">
+        </form>
+    </div>
+</div>
+
+<div style="clear:both;"></div>
+<br />
+
+
+<table class="table table-striped">
+    <thead>
+        <tr><th>Datum</th><th>Notitie</th><th>Actie</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var note in Model)
+        {
+            <tr>
+                <td>@note.Date.ToString("dd-MM-yyyy")</td>
+                <td>@note.Text</td>
+                <td>
+                    @Html.ActionLink("Openen", "Index", "Home", new { date = note.Date.ToString("dd-MM-yyyy") }, new { @class = "btn btn-primary" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

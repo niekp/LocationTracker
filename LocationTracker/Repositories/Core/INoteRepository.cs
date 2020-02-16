@@ -10,5 +10,6 @@ namespace LocationTracker.Repositories.Core
         Task<Note> GetNote(DateTime date);
         Task SaveNote(DateTime date, string note);
         Task<List<Note>> SearchNotes(string search);
+        Task<List<Note>> GetBetween(DateTime from, DateTime to);
     }
 }

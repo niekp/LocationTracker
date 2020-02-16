@@ -10,6 +10,7 @@ using LocationTracker.Repositories.Core;
 using System.Globalization;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
+using LocationTracker.Utils;
 
 namespace LocationTracker.Controllers
 {
@@ -34,20 +35,10 @@ namespace LocationTracker.Controllers
             this.noteRepository = noteRepository;
         }
 
-        private DateTime GetDate(string date = "")
-        {
-            if (string.IsNullOrEmpty(date) ||
-                !(DateTime.TryParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime _date)))
-            {
-                _date = DateTime.Now.Date;
-            }
-
-            return _date;
-        }
 
         public async Task<IActionResult> Index(string date = "")
         {
-            var _date = GetDate(date);
+            var _date = DateFunctions.GetDate(date);
             var days = await dayRepository.GetDays(_date, _date.AddDays(1).AddMinutes(-1));
             ViewBag.Date = _date;
             ViewBag.Note = await noteRepository.GetNote(_date);
@@ -64,7 +55,7 @@ namespace LocationTracker.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveNote(string date, string note)
         {
-            var _date = GetDate(date);
+            var _date = DateFunctions.GetDate(date);
             await noteRepository.SaveNote(_date, note);
 
             return RedirectToAction("Index", new { date });

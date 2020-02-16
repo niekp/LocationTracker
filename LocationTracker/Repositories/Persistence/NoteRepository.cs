@@ -15,6 +15,14 @@ namespace LocationTracker.Repositories.Persistence
         {
         }
 
+        public Task<List<Note>> GetBetween(DateTime from, DateTime to)
+        {
+            return dbSet
+                    .Where(n => n.Date >= from && n.Date <= to)
+                    .OrderByDescending(n => n.Date)
+                    .ToListAsync();
+        }
+
         public async Task<Note> GetNote(DateTime date)
         {
             var note = await dbSet.Where(n => n.Date.Date == date.Date).FirstOrDefaultAsync();

@@ -8,6 +8,7 @@ using LocationTracker.Repositories.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using LocationTracker.Utils;
 
 namespace LocationTracker.Controllers
 {
@@ -39,17 +40,9 @@ namespace LocationTracker.Controllers
         {
             var location = await locationRepository.GetByIdWithHistory(id);
 
-            if (string.IsNullOrEmpty(from) ||
-                !(DateTime.TryParseExact(from, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime _from)))
-            {
-                _from = DateTime.Now.Date.AddDays(-7);
-            }
+            var _from = DateFunctions.GetDate(from, DateTime.Now.Date.AddDays(-7));
+            var _to = DateFunctions.GetDate(to, DateTime.Now.Date);
 
-            if (string.IsNullOrEmpty(to) ||
-                !(DateTime.TryParseExact(to, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime _to)))
-            {
-                _to = DateTime.Now.Date;
-            }
             _to = _to.AddHours(23.99);
 
             ViewBag.From = _from;

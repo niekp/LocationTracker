@@ -1,12 +1,16 @@
-﻿<h4>Locatie</h4>
+﻿@{
+    var controllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<h4>Locatie</h4>
 <ul class="nav nav-pills flex-column">
     <li class="nav-item">
-        <a class="nav-link active" href="@Url.Action("Index", "Home")">Tijdlijn</a>
-        <a class="nav-link" href="@Url.Action("Process", "Home")">Verwerk</a>
+        <a class="nav-link@(controllerName == "Home" ? " active" : "")" href="@Url.Action("Index", "Home")">Tijdlijn</a>
+        <a class="nav-link@(controllerName == "Note" ? " active" : "")" href="@Url.Action("Index", "Note")">Notities</a>
     </li>
 
     <li class="nav-item dropdown">
-        <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">
+        <a class="dropdown-toggle nav-link@(controllerName == "Stats" || controllerName == "Running" ? " active" : "")" data-toggle="dropdown" href="#">
             Statistieken
             <span class="caret"></span>
         </a>
@@ -17,7 +21,7 @@
     </li>
 
     <li class="nav-item dropdown">
-        <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">
+        <a class="dropdown-toggle nav-link@(controllerName == "Location" || controllerName == "Tag" || controllerName == "Import" ? " active" : "")" data-toggle="dropdown" href="#">
             Instellingen
             <span class="caret"></span>
         </a>
@@ -27,4 +31,5 @@
             <li class="nav-item"><a class="dropdown-item" href="@Url.Action("Index", "Import")">Importeer GPX</a></li>
         </ul>
     </li>
+    <a class="nav-link" href="@Url.Action("Process", "Home")">Verwerk</a>
 </ul>
