@@ -18,6 +18,7 @@ namespace LocationTracker.Data
         public DbSet<RideTag> RideTag { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<UserSession> UserSession { get; set; }
+        public DbSet<Note> Note { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

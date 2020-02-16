@@ -52,6 +52,7 @@ namespace LocationTracker
             services.AddTransient<ITagRepository, TagRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserSessionRepository, UserSessionRepository>();
+            services.AddTransient<INoteRepository, NoteRepository>();
 
             // Helper repos
             services.AddTransient<IStatsRepository, StatsRepository>();

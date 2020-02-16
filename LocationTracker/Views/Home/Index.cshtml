@@ -66,7 +66,7 @@
                     </td>
                     <td>
                         @if (day.Id == Model.Last().Id
-                        && day.Id != Model.FirstOrDefault().Id) // Last entry of the day
+                       && day.Id != Model.FirstOrDefault().Id) // Last entry of the day
                         {
                             @day.TimeFrom.ToString("HH:mm")
                             @Html.Raw(" - ")
@@ -102,3 +102,24 @@
         }
     </tbody>
 </table>
+
+@if (ViewBag.Note is Note)
+{
+    
+    Note note = ViewBag.Note;
+    <h4 class="mt-4">Notities</h4>
+
+    @using (Html.BeginForm("SaveNote", "Home", FormMethod.Post))
+    {
+        <fieldset>
+            @Html.Hidden("date", note.Date)
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <textarea name="note" class="form-control" rows="3">@note.Text</textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Opslaan</button>
+        </fieldset>
+    }
+}
