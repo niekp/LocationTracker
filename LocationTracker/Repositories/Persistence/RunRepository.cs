@@ -55,8 +55,13 @@ namespace LocationTracker.Repositories.Persistence
 
             foreach (var date in rides.Select(r => r.TimeFrom.Date).Distinct())
             {
-                var runsOnDate = rides.Where(r => r.TimeFrom.Date == date);
-                var run = GetRunFromRides(runsOnDate.ToList());
+                var runsOnDate = rides.Where(r => r.TimeFrom.Date == date && r.DistanceInMeters > 0).ToList();
+                if (runsOnDate.Count == 0)
+                {
+                    continue;
+                }
+
+                var run = GetRunFromRides(runsOnDate);
 
                 runs.Add(run);
             }
@@ -67,7 +72,7 @@ namespace LocationTracker.Repositories.Persistence
         public async Task<Run> GetRun(DateTime date)
         {
             var tag = await tagRepository.GetOrCreate(Constants.RUNNING_TAG);
-            var rides = (await rideRepository.GetByTag(tag)).Where(r => r.TimeFrom.Date == date);
+            var rides = (await rideRepository.GetByTag(tag)).Where(r => r.TimeFrom.Date == date && r.DistanceInMeters > 0);
             var run = GetRunFromRides(rides.ToList());
 
             return run;

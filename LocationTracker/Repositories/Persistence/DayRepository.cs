@@ -118,6 +118,8 @@ namespace LocationTracker.Repositories.Persistence
                     }
                 }
 
+                await SaveAsync();
+
                 // Check if the previous record is a ride. This also needs to be extended
                 if (previousDay.Ride is Ride)
                 {
@@ -144,6 +146,9 @@ namespace LocationTracker.Repositories.Persistence
                         rideRepository.Delete(nextDay.Ride.Id);
                         Delete(nextDay.Id);
                     }
+
+                    previousDay.Ride.ResetDistance();
+                    rideRepository.Update(previousDay.Ride);
                 }
 
                 Update(previousDay);
