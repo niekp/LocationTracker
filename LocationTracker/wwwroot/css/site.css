@@ -102,3 +102,7 @@ body {
 .yearly-stats td, .yearly-stats th {
     padding: 2px;
 }
+
+#timeSlider {
+    width: 100%;
+}

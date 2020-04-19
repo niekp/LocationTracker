@@ -7,8 +7,9 @@ namespace LocationTracker.Repositories.Core
 {
     public interface IRideRepository : IRepository<Ride>
     {
-        public Task<Ride> GetByIdFull(int id);
-        public Task SetTags(int rideId, string tags);
-        public Task<List<Ride>> GetByTag(Tag Tag);
+        Task<Ride> GetByIdFull(int id);
+        Task SetTags(int rideId, string tags);
+        Task<List<Ride>> GetByTag(Tag Tag);
+        Task SplitRide(int rideId, long timestamp);
     }
 }

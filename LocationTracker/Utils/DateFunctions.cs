@@ -21,5 +21,12 @@ namespace LocationTracker.Utils
 
             return _date;
         }
+
+        public static DateTime UnixTimeToDateTime(long unixtime)
+        {
+            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddMilliseconds(unixtime).ToLocalTime();
+            return dtDateTime;
+        }
     }
 }

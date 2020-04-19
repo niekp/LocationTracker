@@ -89,5 +89,68 @@ namespace LocationTracker.Repositories.Persistence
 
             await SaveAsync();
         }
+
+        public async Task SplitRide(int rideId, long timestamp)
+        {
+            var ride = await GetByIdFull(rideId);
+            if (!(ride is Ride))
+            {
+                throw new ArgumentException("Invalid ride");
+            }
+
+            var timeFrom =  DateFunctions.UnixTimeToDateTime(timestamp);
+            var pingsAfterSplit = ride.Pings.Where(p => p.Time > timeFrom).OrderBy(p => p.Time);
+            
+            // New ride
+            var newRide = new Ride()
+            {
+                TimeFrom = timeFrom,
+                TimeTo = ride.TimeTo,
+            };
+
+            Insert(newRide);
+
+            await db.SaveChangesAsync();
+
+            // New day
+            var newDay = new Day()
+            {
+                TimeFrom = timeFrom,
+                TimeTo = ride.Day.TimeTo,
+                RideId = newRide.Id
+            };
+
+            db.Add(newDay);
+            await db.SaveChangesAsync();
+
+            // Cut off old day & ride
+            ride.Day.TimeTo = timeFrom.AddSeconds(-1);
+            ride.TimeTo = timeFrom.AddSeconds(-1);
+            Update(ride);
+            db.Attach(ride.Day);
+            await db.SaveChangesAsync();
+
+            // Move pings to new day & ride
+            foreach (var ping in pingsAfterSplit)
+            {
+                ping.RideId = newRide.Id;
+                ping.DayId = newDay.Id;
+                db.Attach(ping);
+            }
+
+            await db.SaveChangesAsync();
+
+            // Get rides from DB to reset distance.
+            ride = await GetByIdFull(ride.Id);
+            newRide = await GetByIdFull(newRide.Id);
+
+            ride.ResetDistance();
+            newRide.ResetDistance();
+            Update(ride);
+            Update(newRide);
+
+            await db.SaveChangesAsync();
+
+        }
     }
 }

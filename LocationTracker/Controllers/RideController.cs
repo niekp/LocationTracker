@@ -74,7 +74,12 @@ namespace LocationTracker.Controllers
 
             return RedirectToAction("Index", "Ride", new { id = ride.Id });
         }
-        
+
+        public async Task<IActionResult> Split(int rideId, long timestamp)
+        {
+            await rideRepository.SplitRide(rideId, timestamp);
+            return RedirectToAction("Index", new { id = rideId });
+        }
 
     }
 }
