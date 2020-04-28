@@ -98,5 +98,26 @@ namespace LocationTracker.Repositories.Persistence
 
             await SaveAsync();
         }
+
+        public async Task<List<Coordinate>> GetUniqueLocationsBetweenDates(DateTime dateFrom, DateTime dateTo)
+        {
+            var pings = await (from p in db.Ping
+                    where p.Time >= dateFrom && p.Time <= dateTo
+                    && p.DayId > 0
+                    group p by new { p.Latitude, p.Longitude } into pu
+                    select new
+                    {
+                        pu.Key.Latitude,
+                        pu.Key.Longitude,
+                        Count = pu.Count()
+                    }).OrderBy(p => p.Latitude)
+                    .ThenBy(p => p.Longitude)
+                    .ToListAsync();
+
+            return pings.Select(p => new Coordinate() {
+                Latitude = p.Latitude,
+                Longitude = p.Longitude
+            }).ToList();
+        }
     }
 }
