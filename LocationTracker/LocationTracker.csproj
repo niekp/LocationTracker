@@ -37,6 +37,7 @@
     <Folder Include="Views\Stats\" />
     <Folder Include="Views\Running\" />
     <Folder Include="Views\Note\" />
+    <Folder Include="Views\HistoryMap\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="mono_crash.8682cc0d8.0.json" />

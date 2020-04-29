@@ -1,22 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
+using LocationTracker.Models;
 using LocationTracker.Repositories.Core;
+using LocationTracker.Utils;
 using Microsoft.AspNetCore.Hosting;
 
 namespace LocationTracker.Jobs
 {
     public class HistoryMap
     {
-        private readonly IWebHostEnvironment env;
         private readonly IPingRepository pingRepository;
 
-        public HistoryMap(IWebHostEnvironment env, IPingRepository pingRepository)
+        public HistoryMap(IPingRepository pingRepository)
         {
-            this.env = env;
             this.pingRepository = pingRepository;
+        }
+
+        private void DrawCoordinates(Graphics graph, Pen pen, List<Coordinate> coordinates, int multiplier, double x_min, double y_min)
+        {
+            foreach (var coord in coordinates)
+            {
+                graph.DrawEllipse(pen, (int)((coord.Longitude * multiplier) - x_min), (int)((coord.Latitude * multiplier) - y_min), 1, 1);
+            }
         }
 
         [DisableConcurrentExecution(timeoutInSeconds: 60 * 30)]
@@ -41,16 +50,29 @@ namespace LocationTracker.Jobs
             Graphics graph = Graphics.FromImage(image);
             graph.Clear(Color.Black);
 
-            Pen pen = new Pen(Brushes.White);
+            // Add all pings as light grey
+            DrawCoordinates(graph, new Pen(Brushes.LightGray), coordinates, multiplier, x_min, y_min);
 
-            foreach (var coord in coordinates)
-            {
-                graph.DrawEllipse(pen, (int)((coord.Longitude * multiplier) - x_min), (int)((coord.Latitude * multiplier) - y_min), 1, 1);
-            }
+            // Redraw the past 6 months with white
+            coordinates = await pingRepository
+                .GetUniqueLocationsBetweenDates(
+                DateTime.Now.AddMonths(-6),
+                DateTime.Now
+            );
 
-            var webRoot = env.WebRootPath;
-            var file = System.IO.Path.Combine(webRoot, "map.png");
-            image.Save(file, System.Drawing.Imaging.ImageFormat.Png);
+            DrawCoordinates(graph, new Pen(Brushes.White), coordinates, multiplier, x_min, y_min);
+
+            // Redraw the past week with cyan
+            coordinates = await pingRepository
+                .GetUniqueLocationsBetweenDates(
+                DateTime.Now.AddDays(-7),
+                DateTime.Now
+            );
+
+            DrawCoordinates(graph, new Pen(Brushes.Cyan), coordinates, multiplier, x_min, y_min);
+
+            // Save the image
+            image.Save(Constants.BASE_MAP_PNG, System.Drawing.Imaging.ImageFormat.Png);
         }
     }
 }

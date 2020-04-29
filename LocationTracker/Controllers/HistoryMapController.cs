@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using Hangfire;
 using LocationTracker.Models;
 using LocationTracker.Repositories.Core;
+using LocationTracker.Utils;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,13 +35,23 @@ namespace LocationTracker.Controllers
         [HttpGet]
         public IActionResult Map()
         {
-            var webRoot = env.WebRootPath;
-            var file = System.IO.Path.Combine(webRoot, "map.png");
-            return File(file, "image/png", "Kaart");
+            var folderParts = Constants.BASE_MAP_PNG.Split("/");
+            var folder = string.Join("/", folderParts.Take(folderParts.Count() - 1));
+            var file = folderParts.Last();
+
+            PhysicalFileProvider provider = new PhysicalFileProvider(folder);
+            IFileInfo fileInfo = provider.GetFileInfo(file);
+
+            var readStream = fileInfo.CreateReadStream();
+            var mimeType = "image/png";
+
+            provider.Dispose();
+
+            return File(readStream, mimeType, "kaart.png");
         }
 
         // GET: /<controller>/
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }
