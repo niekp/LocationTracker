@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
@@ -24,55 +25,70 @@ namespace LocationTracker.Jobs
         {
             foreach (var coord in coordinates)
             {
-                graph.DrawEllipse(pen, (int)((coord.Longitude * multiplier) - x_min), (int)((coord.Latitude * multiplier) - y_min), 1, 1);
+                var x = (int)((coord.Latitude * multiplier) - x_min);
+                var y = (int)((coord.Longitude * multiplier) - y_min);
+                graph.DrawEllipse(pen, x, y, 1, 1);
             }
         }
 
         [DisableConcurrentExecution(timeoutInSeconds: 60 * 30)]
         public async Task DrawMap()
         {
-            var coordinates = await pingRepository
-                .GetUniqueLocationsBetweenDates(
-                new DateTime(1900, 1, 1),
-                DateTime.Now
-            );
-
             var multiplier = 10000;
             var padding = 50;
-            var y_min = (coordinates.Min(c => c.Latitude) * multiplier) - padding;
-            var y_max = (coordinates.Max(c => c.Latitude) * multiplier) - padding;
-            var x_min = (coordinates.Min(c => c.Longitude) * multiplier) + padding;
-            var x_max = (coordinates.Max(c => c.Longitude) * multiplier) + padding;
+            var bounds = await pingRepository.GetMinMax(new DateTime(1900, 1, 1), DateTime.Now);
+            var x_min = (bounds.x_min * multiplier);
+            var x_max = (bounds.x_max * multiplier);
+            var y_min = (bounds.y_min * multiplier);
+            var y_max = (bounds.y_max * multiplier);
             int width = Convert.ToInt32(Math.Ceiling(x_max - x_min));
             int height = Convert.ToInt32(Math.Ceiling(y_max - y_min));
 
-            Image image = new Bitmap(width + (padding), height);
-            Graphics graph = Graphics.FromImage(image);
-            graph.Clear(Color.Black);
+            if (File.Exists(Constants.BASE_MAP_PNG))
+            {
+                File.Delete(Constants.BASE_MAP_PNG);
+            }
 
-            // Add all pings as light grey
-            DrawCoordinates(graph, new Pen(Brushes.LightGray), coordinates, multiplier, x_min, y_min);
+            using (Image image = new Bitmap(width + padding, height + padding))
+            {
+                using (Graphics graph = Graphics.FromImage(image))
+                {
+                    graph.Clear(Color.Black);
 
-            // Redraw the past 6 months with white
-            coordinates = await pingRepository
-                .GetUniqueLocationsBetweenDates(
-                DateTime.Now.AddMonths(-6),
-                DateTime.Now
-            );
+                    // Add all pings as light grey
+                    DrawCoordinates(graph, new Pen(Brushes.DarkGray), await pingRepository
+                        .GetUniqueLocationsBetweenDates(
+                        new DateTime(1900, 1, 1),
+                        DateTime.Now
+                    ), multiplier, x_min, y_min);
 
-            DrawCoordinates(graph, new Pen(Brushes.White), coordinates, multiplier, x_min, y_min);
+                    // Redraw the past 6 months with white
+                    DrawCoordinates(graph, new Pen(Brushes.White), await pingRepository
+                        .GetUniqueLocationsBetweenDates(
+                        DateTime.Now.AddMonths(-6),
+                        DateTime.Now
+                    ), multiplier, x_min, y_min);
 
-            // Redraw the past week with cyan
-            coordinates = await pingRepository
-                .GetUniqueLocationsBetweenDates(
-                DateTime.Now.AddDays(-7),
-                DateTime.Now
-            );
+                    // Redraw the past week with cyan
+                    DrawCoordinates(graph, new Pen(Brushes.Cyan), await pingRepository
+                        .GetUniqueLocationsBetweenDates(
+                        DateTime.Now.AddDays(-7),
+                        DateTime.Now
+                    ), multiplier, x_min, y_min);
 
-            DrawCoordinates(graph, new Pen(Brushes.Cyan), coordinates, multiplier, x_min, y_min);
-
-            // Save the image
-            image.Save(Constants.BASE_MAP_PNG, System.Drawing.Imaging.ImageFormat.Png);
+                    // Save the map
+                    image.Save(Constants.BASE_MAP_PNG, System.Drawing.Imaging.ImageFormat.Png);
+                }
+            }
+            /*
+            // Reopen and rotate it. something weird is happening with the x, y, lat, long mapping.
+            using (var imageRotate = new Bitmap(Constants.BASE_MAP_PNG))
+            {
+                imageRotate.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                imageRotate.Save("/tmp/location.net.map2.png", System.Drawing.Imaging.ImageFormat.Png);
+            }
+            */
+            
         }
     }
 }

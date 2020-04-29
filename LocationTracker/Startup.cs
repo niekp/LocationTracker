@@ -134,10 +134,6 @@ namespace LocationTracker
             RecurringJob.AddOrUpdate<ProcessPings>("ProcessPings", x => x.Process(), Cron.Daily);
             RecurringJob.AddOrUpdate<HistoryMap>("DrawMap", x => x.DrawMap(), Cron.Daily);
 
-#if !DEBUG
-            BackgroundJob.Enqueue<HistoryMap>(x => x.DrawMap());
-#endif
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

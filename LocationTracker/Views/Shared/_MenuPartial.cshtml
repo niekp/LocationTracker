@@ -10,13 +10,14 @@
     </li>
 
     <li class="nav-item dropdown">
-        <a class="dropdown-toggle nav-link@(controllerName == "Stats" || controllerName == "Running" ? " active" : "")" data-toggle="dropdown" href="#">
+        <a class="dropdown-toggle nav-link@(controllerName == "Stats" || controllerName == "Running" || controllerName == "HistoryMap" ? " active" : "")" data-toggle="dropdown" href="#">
             Statistieken
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
             <li class="nav-item"><a class="dropdown-item" href="@Url.Action("Year", "Stats")">Jaar</a></li>
             <li class="nav-item"><a class="dropdown-item" href="@Url.Action("Index", "Running")">Hardlopen</a></li>
+            <li class="nav-item"><a class="dropdown-item" href="@Url.Action("Index", "HistoryMap")">Kaart</a></li>
         </ul>
     </li>
 

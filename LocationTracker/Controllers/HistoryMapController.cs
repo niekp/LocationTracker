@@ -4,9 +4,11 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
+using LocationTracker.Jobs;
 using LocationTracker.Models;
 using LocationTracker.Repositories.Core;
 using LocationTracker.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
@@ -15,20 +17,19 @@ using Microsoft.Extensions.FileProviders;
 
 namespace LocationTracker.Controllers
 {
+    [Authorize]
     public class HistoryMapController : Controller
     {
-        private readonly IWebHostEnvironment env;
-        private readonly IPingRepository pingRepository;
-
-        public HistoryMapController(IWebHostEnvironment env, IPingRepository pingRepository)
+        HistoryMap historyMapJob = null;
+        public HistoryMapController(IPingRepository pingRepository)
         {
-            this.env = env;
-            this.pingRepository = pingRepository;
+            historyMapJob = new HistoryMap(pingRepository);
         }
 
-        public IActionResult Start()
+        public async Task<IActionResult> Start()
         {
-            BackgroundJob.Enqueue<Jobs.HistoryMap>(x => x.DrawMap());
+            //await historyMapJob.DrawMap();
+            BackgroundJob.Enqueue<HistoryMap>(x => x.DrawMap());
             return RedirectToAction("Index");
         }
 
@@ -48,6 +49,17 @@ namespace LocationTracker.Controllers
             provider.Dispose();
 
             return File(readStream, mimeType, "kaart.png");
+        }
+
+        public IActionResult Rotate()
+        {
+            using (var imageRotate = new Bitmap(Constants.BASE_MAP_PNG))
+            {
+                imageRotate.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                imageRotate.Save(Constants.BASE_MAP_PNG, System.Drawing.Imaging.ImageFormat.Png);
+            }
+
+            return RedirectToAction("Index");
         }
 
         // GET: /<controller>/
