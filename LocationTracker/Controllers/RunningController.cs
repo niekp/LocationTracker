@@ -25,13 +25,14 @@ namespace LocationTracker.Controllers
             this.tagRepository = tagRepository;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string Tag = Constants.RUNNING_TAG)
         {
-            var runs = await runRepository.GetRuns();
+            var runs = await runRepository.GetRuns(Tag);
+            ViewBag.Tag = Tag;
             return View(runs);
         }
 
-        public async Task<IActionResult> Run(string date)
+        public async Task<IActionResult> Run(string date, string Tag = Constants.RUNNING_TAG)
         {
             if (string.IsNullOrEmpty(date) ||
                 !(DateTime.TryParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime _date)))
@@ -39,7 +40,8 @@ namespace LocationTracker.Controllers
                 return RedirectToAction("Index");
             }
 
-            var run = await runRepository.GetRun(_date);
+            var run = await runRepository.GetRun(_date, Tag);
+            ViewBag.Tag = Tag;
             return View(run);
         }
 

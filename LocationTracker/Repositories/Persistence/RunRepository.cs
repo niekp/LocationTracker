@@ -47,9 +47,9 @@ namespace LocationTracker.Repositories.Persistence
             return run;
         }
 
-        public async Task<List<Run>> GetRuns()
+        public async Task<List<Run>> GetRuns(string Tag = Constants.RUNNING_TAG)
         {
-            var tag = await tagRepository.GetOrCreate(Constants.RUNNING_TAG);
+            var tag = await tagRepository.GetOrCreate(Tag);
             var rides = await rideRepository.GetByTag(tag);
             var runs = new List<Run>();
 
@@ -69,9 +69,9 @@ namespace LocationTracker.Repositories.Persistence
             return runs.OrderByDescending(r => r.TimeFrom).ToList();
         }
 
-        public async Task<Run> GetRun(DateTime date)
+        public async Task<Run> GetRun(DateTime date, string Tag = Constants.RUNNING_TAG)
         {
-            var tag = await tagRepository.GetOrCreate(Constants.RUNNING_TAG);
+            var tag = await tagRepository.GetOrCreate(Tag);
             var rides = (await rideRepository.GetByTag(tag)).Where(r => r.TimeFrom.Date == date && r.DistanceInMeters > 0);
             var run = GetRunFromRides(rides.ToList());
 

@@ -1,6 +1,6 @@
 ﻿@model List<Run>
 @{
-    ViewData["Title"] = "Hardlopen";
+    ViewData["Title"] = string.IsNullOrEmpty(ViewBag.Tag) ? "Hardlopen" : ViewBag.Tag;
 }
 <style>
     tr { cursor: pointer; }

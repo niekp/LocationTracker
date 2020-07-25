@@ -6,7 +6,7 @@
     {
         onclick = String.Concat(
             "window.location.href='",
-            Url.ActionLink("Run", "Running", new { date = Model.TimeFrom.Date.ToString("dd-MM-yyyy") }),
+            Url.ActionLink("Run", "Running", new { date = Model.TimeFrom.Date.ToString("dd-MM-yyyy"), Tag = ViewBag.Tag }),
             "';");
     }
 }

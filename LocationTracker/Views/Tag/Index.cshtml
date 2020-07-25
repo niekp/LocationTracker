@@ -14,6 +14,7 @@
                 <td>@tag.Label</td>
                 <td>
                     @Html.ActionLink("Wijzigen", "Edit", "Tag", new { id = tag.Id }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Geschiedenis", "Index", "Running", new { Tag = tag.Label }, new { @class = "btn btn-primary" })
                     @Html.ActionLink("Verwijderen", "Delete", "Tag", new { id = tag.Id }, new { @class = "btn btn-primary", @onclick = "return confirm('Weet je het zeker?');" })
                 </td>
             </tr>

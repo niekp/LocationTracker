@@ -1,6 +1,6 @@
 ﻿@model Run
 @{
-    ViewData["Title"] = "Hardlopen";
+    ViewData["Title"] = string.IsNullOrEmpty(ViewBag.Tag) ? "Hardlopen" : ViewBag.Tag;
 }
 
 @{
@@ -21,4 +21,4 @@
     </tbody>
 </table>
 
-@Html.ActionLink("Terug", "Index", "Running", null, new { @class = "btn btn-primary" })
+@Html.ActionLink("Terug", "Index", "Running", new { Tag = ViewBag.Tag }, new { @class = "btn btn-primary" })
