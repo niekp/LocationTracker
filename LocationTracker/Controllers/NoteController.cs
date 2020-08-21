@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using LocationTracker.Repositories.Core;
 using LocationTracker.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace LocationTracker.Controllers
 {
+    [Authorize]
     public class NoteController : Controller
     {
         private INoteRepository noteRepository;

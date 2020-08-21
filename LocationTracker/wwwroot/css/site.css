@@ -106,3 +106,9 @@ body {
 #timeSlider {
     width: 100%;
 }
+
+.map-container {
+    width:100%;
+    height:500px;
+    overflow: auto;
+}

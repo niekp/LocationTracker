@@ -15,5 +15,7 @@ namespace LocationTracker.Utils
 
         public const string RUNNING_TAG = "Hardlopen";
         public const string WALKING_TAG = "Wandelen";
+
+        public const string BASE_MAP_PNG = "/tmp/location.net.map.png";
     }
 }

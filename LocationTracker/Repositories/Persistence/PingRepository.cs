@@ -98,5 +98,39 @@ namespace LocationTracker.Repositories.Persistence
 
             await SaveAsync();
         }
+
+        public async Task<List<Coordinate>> GetUniqueLocationsBetweenDates(DateTime dateFrom, DateTime dateTo)
+        {
+            var pings = await (from p in db.Ping
+                    where p.Time >= dateFrom && p.Time <= dateTo
+                    && p.DayId > 0
+                    group p by new { p.Latitude, p.Longitude } into pu
+                    select new
+                    {
+                        pu.Key.Latitude,
+                        pu.Key.Longitude,
+                        Count = pu.Count()
+                    }).OrderBy(p => p.Latitude)
+                    .ThenBy(p => p.Longitude)
+                    .ToListAsync();
+
+            return pings.Select(p => new Coordinate() {
+                Latitude = p.Latitude,
+                Longitude = p.Longitude
+            }).ToList();
+        }
+
+        public async Task<(double x_min, double x_max, double y_min, double y_max, DateTime FirstPing)> GetMinMax(DateTime dateFrom, DateTime dateTo)
+        {
+            var x_min = await db.Ping.Where(p => p.Time >= dateFrom && p.Time <= dateTo).MinAsync(p => p.Latitude);
+            var x_max = await db.Ping.Where(p => p.Time >= dateFrom && p.Time <= dateTo).MaxAsync(p => p.Latitude);
+
+            var y_min = await db.Ping.Where(p => p.Time >= dateFrom && p.Time <= dateTo).MinAsync(p => p.Longitude);
+            var y_max = await db.Ping.Where(p => p.Time >= dateFrom && p.Time <= dateTo).MaxAsync(p => p.Longitude);
+
+            var FirstPing = await db.Ping.Where(p => p.Time >= dateFrom && p.Time <= dateTo).MinAsync(p => p.Time);
+
+            return (x_min, x_max, y_min, y_max, FirstPing);
+        }
     }
 }

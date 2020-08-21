@@ -19,6 +19,7 @@
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.9" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.1" />
     <PackageReference Include="Hangfire.Dashboard.Authorization" Version="3.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.0-preview.3.20214.6" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -36,6 +37,7 @@
     <Folder Include="Views\Stats\" />
     <Folder Include="Views\Running\" />
     <Folder Include="Views\Note\" />
+    <Folder Include="Views\HistoryMap\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="mono_crash.8682cc0d8.0.json" />

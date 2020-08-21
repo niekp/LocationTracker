@@ -15,7 +15,9 @@ namespace LocationTracker.Repositories.Core
 
         Task MergeLocation(int fromId, int toId);
 
+        Task<List<Coordinate>> GetUniqueLocationsBetweenDates(DateTime from, DateTime to);
         Task<List<Ping>> GetBetweenDates(DateTime from, DateTime to);
         Task DeleteBetweenDates(DateTime from, DateTime to);
+        Task<(double x_min, double x_max, double y_min, double y_max, DateTime FirstPing)> GetMinMax(DateTime from, DateTime to);
     }
 }

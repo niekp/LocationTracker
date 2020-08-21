@@ -43,9 +43,9 @@ namespace LocationTracker.Utils
                 ).PointToPointDistance;
         }
 
-        public Coordinates GetCoordinates(List<Ping> pings, double accuracy = 50)
+        public Coordinate GetCoordinates(List<Ping> pings, double accuracy = 50)
         {
-            var coords = new Coordinates() { Latitude = 0, Longitude = 0 };
+            var coords = new Coordinate() { Latitude = 0, Longitude = 0 };
             var filteredPings = pings.Where(p => p.Accuracy <= accuracy).ToList();
 
             if (filteredPings.Count == 0 && accuracy < 200)

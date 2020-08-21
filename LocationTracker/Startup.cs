@@ -132,6 +132,7 @@ namespace LocationTracker
             });
 
             RecurringJob.AddOrUpdate<ProcessPings>("ProcessPings", x => x.Process(), Cron.Daily);
+            RecurringJob.AddOrUpdate<HistoryMap>("DrawMap", x => x.DrawMap(), Cron.Daily);
 
             app.UseEndpoints(endpoints =>
             {
