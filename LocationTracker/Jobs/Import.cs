@@ -119,7 +119,7 @@ namespace LocationTracker.Jobs
             cache.ClearCache();
             await Reset(resetFrom, DateTime.Now);
 
-            BackgroundJob.Enqueue<ProcessPings>(x => x.Process());
+            // BackgroundJob.Enqueue<ProcessPings>(x => x.Process());
         }
 
         public async Task Reset(DateTime from, DateTime to)
