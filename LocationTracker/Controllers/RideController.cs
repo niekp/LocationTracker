@@ -63,6 +63,18 @@ namespace LocationTracker.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public async Task<IActionResult> Delete(int rideId)
+        {
+            var ride = await rideRepository.GetByIdFull(rideId);
+
+            if (ride is Ride)
+            {
+                await dayRepository.DeleteDay(ride.Day.Id, true);
+            }
+
+            return RedirectToAction("Index", "Home", new { date = ride.TimeFrom.ToString("dd-MM-yyyy") });
+        }
+
         [HttpPost]
         public async Task<IActionResult> SaveRide(Ride _ride)
         {

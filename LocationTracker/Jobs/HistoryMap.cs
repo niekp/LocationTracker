@@ -34,9 +34,10 @@ namespace LocationTracker.Jobs
         [DisableConcurrentExecution(timeoutInSeconds: 60 * 30)]
         public async Task DrawMap()
         {
-            var multiplier = 10000;
+            var multiplier = 100;
             var padding = 50;
-            var bounds = await pingRepository.GetMinMax(new DateTime(1900, 1, 1), DateTime.Now);
+            var dateStart = DateTime.Now.AddMonths(-12);
+            var bounds = await pingRepository.GetMinMax(dateStart, DateTime.Now);
             var x_min = (bounds.x_min * multiplier);
             var x_max = (bounds.x_max * multiplier);
             var y_min = (bounds.y_min * multiplier);
@@ -49,37 +50,33 @@ namespace LocationTracker.Jobs
                 File.Delete(Constants.BASE_MAP_PNG);
             }
 
-            using (Image image = new Bitmap(width + padding, height + padding))
-            {
-                using (Graphics graph = Graphics.FromImage(image))
-                {
-                    graph.Clear(Color.Black);
+            using Image image = new Bitmap(width + padding, height + padding);
+            using Graphics graph = Graphics.FromImage(image);
+            graph.Clear(Color.Black);
 
-                    // Add all pings as light grey
-                    DrawCoordinates(graph, new Pen(Brushes.DarkGray), await pingRepository
-                        .GetUniqueLocationsBetweenDates(
-                        new DateTime(1900, 1, 1),
-                        DateTime.Now
-                    ), multiplier, x_min, y_min);
+            // Add all pings as light grey
+            DrawCoordinates(graph, new Pen(Brushes.DarkGray), await pingRepository
+                .GetUniqueLocationsBetweenDates(
+                dateStart,
+                DateTime.Now
+            ), multiplier, x_min, y_min);
 
-                    // Redraw the past 6 months with white
-                    DrawCoordinates(graph, new Pen(Brushes.White), await pingRepository
-                        .GetUniqueLocationsBetweenDates(
-                        DateTime.Now.AddMonths(-6),
-                        DateTime.Now
-                    ), multiplier, x_min, y_min);
+            // Redraw the past 6 months with white
+            DrawCoordinates(graph, new Pen(Brushes.White), await pingRepository
+                .GetUniqueLocationsBetweenDates(
+                DateTime.Now.AddMonths(-6),
+                DateTime.Now
+            ), multiplier, x_min, y_min);
 
-                    // Redraw the past week with cyan
-                    DrawCoordinates(graph, new Pen(Brushes.Cyan), await pingRepository
-                        .GetUniqueLocationsBetweenDates(
-                        DateTime.Now.AddDays(-7),
-                        DateTime.Now
-                    ), multiplier, x_min, y_min);
+            // Redraw the past week with cyan
+            DrawCoordinates(graph, new Pen(Brushes.Cyan), await pingRepository
+                .GetUniqueLocationsBetweenDates(
+                DateTime.Now.AddDays(-7),
+                DateTime.Now
+            ), multiplier, x_min, y_min);
 
-                    // Save the map
-                    image.Save(Constants.BASE_MAP_PNG, System.Drawing.Imaging.ImageFormat.Png);
-                }
-            }
+            // Save the map
+            image.Save(Constants.BASE_MAP_PNG, System.Drawing.Imaging.ImageFormat.Png);
             /*
             // Reopen and rotate it. something weird is happening with the x, y, lat, long mapping.
             using (var imageRotate = new Bitmap(Constants.BASE_MAP_PNG))
@@ -88,7 +85,7 @@ namespace LocationTracker.Jobs
                 imageRotate.Save("/tmp/location.net.map2.png", System.Drawing.Imaging.ImageFormat.Png);
             }
             */
-            
+
         }
     }
 }

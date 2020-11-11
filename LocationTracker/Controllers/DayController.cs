@@ -54,11 +54,16 @@ namespace LocationTracker.Controllers
             return RedirectToAction("History", "Location", new { id = oldLocationId });
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, bool? returnHome = false)
         {
             var day = await dayRepository.GetByIdAsync(id);
             var returnLocationId = day.LocationId;
             await dayRepository.DeleteDay(day.Id, false);
+
+            if (returnHome == true)
+            {
+                return RedirectToAction("Index", "Home", new { date = day.TimeFrom.ToString("dd-MM-yyyy") });
+            }
 
             return RedirectToAction("History", "Location", new { id = returnLocationId });
         }

@@ -53,52 +53,56 @@
 
 <table class="table table-striped">
     <thead>
-        <tr><th>Plaats</th><th>Tijd</th><th>Tijdsduur</th></tr>
+        <tr><th>Plaats</th><th>Tijd</th><th>Tijdsduur</th><th></th></tr>
     </thead>
     <tbody>
         @foreach (Day day in Model)
         {
-            <tr>
-                @if (day.Location is Location)
-                {
-                    <td>
-                        @Html.ActionLink(day.Location.Label, "History", "Location", new { id = day.Location.Id })
-                    </td>
-                    <td>
-                        @if (day.Id == Model.Last().Id
-                       && day.Id != Model.FirstOrDefault().Id) // Last entry of the day
-                        {
-                            @day.TimeFrom.ToString("HH:mm")
-                            @Html.Raw(" - ")
-                            if (day.TimeFrom.Date == day.TimeTo.Date)
-                            {
-                                @day.TimeTo.ToString("HH:mm")
-                            }
-                            else
-                            {
-                                @day.TimeTo.ToString("HH:mm d")@Html.Raw("e")
-                            }
-                        }
-                        else
-                        {
-                            @day.GetTimeDisplay();
-                        }
-                    </td>
-                }
-                else if (day.Ride is Ride)
-                {
-                    <td></td>
-                    <td>
-                        <a href="@Url.Action("Index", "Ride", new { id = day.Ride.Id })">
-                            @day.Ride.GetDistanceInKilometers()
-                            @Html.Raw("km - ")
-                            @day.Ride.GetSpeed()
-                            @Html.Raw("km/u")
-                        </a>
-                    </td>
-                }
-                <td>@day.GetTimeSpendDisplay()</td>
-            </tr>
+        <tr>
+            @if (day.Location is Location)
+            {
+        <td>
+            @Html.ActionLink(day.Location.Label, "History", "Location", new { id = day.Location.Id })
+        </td>
+                            <td>
+                                @if (day.Id == Model.Last().Id
+                                    && day.Id != Model.FirstOrDefault().Id
+                                ) // Last entry of the day
+                                {
+                                    @day.TimeFrom.ToString("HH:mm")
+                                    @Html.Raw(" - ") if (day.TimeFrom.Date == day.TimeTo.Date)
+                                                            {
+                                    @day.TimeTo.ToString("HH:mm") }
+                                                            else
+                                                            {
+                                    @day.TimeTo.ToString("HH:mm d")@Html.Raw("e") }
+                                                        }
+                                                        else
+                                                        {
+                                    @day.GetTimeDisplay();
+                                }
+                            </td> }
+                                            else if (day.Ride is Ride)
+                                            {
+                            <td></td>
+                                                <td>
+                                                    <a href="@Url.Action("Index", "Ride", new { id = day.Ride.Id })">
+                                                        @day.Ride.GetDistanceInKilometers()
+                                                        @Html.Raw("km - ")
+                                                        @day.Ride.GetSpeed()
+                                                        @Html.Raw("km/u")
+                                                    </a>
+                                                </td>                }
+            <td>@day.GetTimeSpendDisplay()</td>
+            @if (day.Location is Location)
+            {
+                <td style='width:16px;'><a onclick="return confirm('Weet je het zeker?');" href='@Url.Action("Delete", "Day", new { id = day.Id, returnHome = true })'>x</a></td>
+            }
+            else if (day.Ride is Ride)
+            {
+                <td style='width:16px;'><a onclick="return confirm('Weet je het zeker?');" href='@Url.Action("Delete", "Ride", new { rideId = day.RideId })'>x</a></td>
+            }
+        </tr>
         }
     </tbody>
 </table>
